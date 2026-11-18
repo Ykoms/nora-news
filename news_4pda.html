@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Дайджест новостей — 4PDA • AQVON</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <style>
+:root {
+    --bg:#08090a; --surface:rgba(15,16,17,.7); --border:rgba(255,255,255,.05);
+    --text:#f7f8f8; --text-dim:rgba(255,255,255,.65); --accent:#5e6ad2;
+    --tag-tech:#5e6ad2; --tag-gaming:#00d4ff; --tag-mobile:#10b981; --tag-ai:#f97316; --tag-deals:#ec4899;
+    --glass:rgba(255,255,255,.06); --glass-border:rgba(255,255,255,.1); --glass-blur:blur(16px);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{background:var(--bg);}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:transparent;color:var(--text);line-height:1.6;}
+.aurora{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-2;overflow:hidden;pointer-events:none;}
+.blob{position:absolute;border-radius:50%;filter:blur(90px);will-change:transform;}
+.b1{width:600px;height:600px;background:#6366f1;opacity:.7;top:-15%;left:5%;animation:aurora1 18s ease-in-out infinite;}
+.b2{width:550px;height:550px;background:#a855f7;opacity:.65;bottom:5%;right:5%;animation:aurora2 22s ease-in-out infinite;}
+.b3{width:500px;height:500px;background:#f43f5e;opacity:.5;top:35%;left:45%;animation:aurora3 20s ease-in-out infinite;}
+@keyframes aurora1{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(80px,60px) scale(1.1)}66%{transform:translate(-40px,30px) scale(.95)}}
+@keyframes aurora2{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(-60px,-40px) scale(1.05)}66%{transform:translate(50px,-70px) scale(.9)}}
+@keyframes aurora3{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-80px,50px) scale(1.15)}}
+.header{background:var(--grad);padding:40px 20px;text-align:center;border-bottom:1px solid var(--glass-border);position:relative;}
+.header h1{font-size:2.2em;color:var(--text);margin-bottom:8px;letter-spacing:-.5px;}
+.header h1 span{color:var(--accent);}
+.header .subtitle{color:var(--text-dim);font-size:1em;}
+.header .date{color:var(--accent);font-size:.9em;margin-top:8px;font-weight:600;}
+.source-nav{display:flex;justify-content:center;gap:8px;padding:12px 20px;position:sticky;top:0;z-index:100;background:rgba(8,9,10,.7);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--glass-border);}
+.nav-btn{border:1px solid var(--glass-border);background:transparent;color:var(--text-dim);padding:6px 16px;border-radius:20px;cursor:pointer;font-size:.82em;transition:all .2s;font-family:inherit;text-decoration:none;}
+.nav-btn:hover,.nav-btn.active{border-color:var(--accent);color:var(--text);background:rgba(94,106,210,.15);}
+.container{max-width:900px;margin:0 auto;padding:30px 20px;}
+.stats{display:flex;justify-content:center;gap:30px;padding:20px;background:var(--glass);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border:1px solid var(--glass-border);border-radius:16px;margin:-20px auto 30px;max-width:500px;position:relative;z-index:1;}
+.stat{text-align:center;}
+.stat .num{font-size:1.8em;color:var(--accent);font-weight:700;}
+.stat .label{color:var(--text-dim);font-size:.85em;}
+.news-card{display:flex;gap:16px;background:var(--glass);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:blur(16px);border:1px solid var(--glass-border);border-radius:18px;padding:18px;margin-bottom:18px;transition:all .25s ease;position:relative;overflow:hidden;}
+.news-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;border-radius:18px 0 0 18px;background:var(--accent);}
+.news-card[data-cat="tech"]::before{background:linear-gradient(180deg,var(--tag-tech),#00d4ff);}
+.news-card[data-cat="gaming"]::before{background:linear-gradient(180deg,#533483,var(--tag-gaming));}
+.news-card[data-cat="mobile"]::before{background:linear-gradient(180deg,var(--tag-mobile),#34d399);}
+.news-card[data-cat="ai"]::before{background:linear-gradient(180deg,var(--tag-ai),#fbbf24);}
+.news-card[data-cat="deals"]::before{background:linear-gradient(180deg,var(--tag-deals),#f472b6);}
+.news-card:hover{transform:translateY(-3px);border-color:rgba(255,255,255,.12);}
+.news-card[data-cat="tech"]:hover{box-shadow:0 8px 32px rgba(94,106,210,.2);}
+.news-card[data-cat="gaming"]:hover{box-shadow:0 8px 32px rgba(0,212,255,.2);}
+.news-card[data-cat="mobile"]:hover{box-shadow:0 8px 32px rgba(16,185,129,.2);}
+.news-card[data-cat="ai"]:hover{box-shadow:0 8px 32px rgba(249,115,22,.2);}
+.news-card[data-cat="deals"]:hover{box-shadow:0 8px 32px rgba(236,72,153,.2);}
+.news-card .thumb{flex-shrink:0;width:140px;height:100px;border-radius:12px;overflow:hidden;background:var(--tag-tech);position:relative;}
+.news-card .thumb img{width:100%;height:100%;object-fit:cover;display:block;}
+.news-card .thumb::after{content:'';position:absolute;bottom:0;left:0;right:0;height:40%;background:linear-gradient(transparent,rgba(0,0,0,.5));pointer-events:none;}
+.news-card .body{flex:1;min-width:0;}
+.news-card .meta{display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap;}
+.news-card .tag{color:#fff;padding:3px 10px;border-radius:20px;font-size:.72em;font-weight:600;text-transform:uppercase;transition:box-shadow .3s;}
+.news-card .tag.tech{background:var(--tag-tech);box-shadow:0 0 8px rgba(94,106,210,.3);}
+.news-card .tag.gaming{background:var(--tag-gaming);box-shadow:0 0 8px rgba(0,212,255,.3);}
+.news-card .tag.mobile{background:var(--tag-mobile);box-shadow:0 0 8px rgba(16,185,129,.3);}
+.news-card .tag.ai{background:var(--tag-ai);box-shadow:0 0 10px rgba(249,115,22,.4);animation:pulse 2s infinite;}
+.news-card .tag.deals{background:var(--tag-deals);box-shadow:0 0 8px rgba(236,72,153,.3);}
+@keyframes pulse{0%,100%{box-shadow:0 0 8px rgba(249,115,22,.3)}50%{box-shadow:0 0 18px rgba(249,115,22,.6)}}
+.news-card .author{color:var(--text-dim);font-size:.82em;}
+.news-card .author b{color:var(--text);font-weight:600;}
+.news-card .comments{color:var(--text-dim);font-size:.82em;margin-left:auto;}
+.news-card .comments a{color:var(--text-dim);text-decoration:none;}
+.news-card .comments a:hover{color:var(--accent);}
+.news-card h2{font-size:1.12em;color:var(--text);margin-bottom:8px;line-height:1.35;}
+.news-card h2 a{color:#f5f5f7;text-decoration:none;}
+.news-card h2 a:hover{color:var(--accent);}
+.news-card p{color:var(--text-dim);font-size:.9em;text-shadow:0 1px 4px rgba(0,0,0,.6);}
+.footer{text-align:center;padding:30px;color:var(--text-dim);font-size:.85em;border-top:1px solid var(--glass-border);}
+.footer a{color:var(--accent);text-decoration:none;}
+@media(max-width:600px){
+    .header h1{font-size:1.6em;}
+    .stats{flex-direction:column;gap:15px;}
+    .source-nav{gap:6px;padding:10px 12px;}
+    .nav-btn{padding:5px 12px;font-size:.78em;}
+    .news-card{display:block;overflow:hidden;}
+    .news-card .thumb{float:left;width:38%;max-width:150px;height:auto;margin:0 12px 6px 0;border-radius:12px;}
+    .news-card .thumb img{height:auto;}
+    .news-card .body{display:block;}
+    .news-card .meta{margin-bottom:6px;gap:8px;}
+    .news-card .comments{margin-left:0;}
+    .news-card h2{font-size:1.02em;margin-bottom:6px;}
+    .news-card p{font-size:.88em;}
+    .blob{filter:blur(80px);}
+    .b1{width:300px;height:300px;}
+    .b2{width:250px;height:250px;}
+    .b3{width:200px;height:200px;}
+}
+#particles{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;pointer-events:none;}
+
+    </style>
+</head>
+<body>
+<canvas id="particles"></canvas>
+<div class="aurora"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div></div>
+    <div class="header">
+        <h1><span>AQVON</span> News Digest</h1>
+        <div class="subtitle">Дайджест технологических новостей</div>
+        <div class="date">📅 29 июля 2026 • Обновлено 17:50 МСК</div>
+    </div>
+
+    
+    <div class="source-nav">
+        <a href="news_4pda.html" class="nav-btn active">4PDA</a>
+        <a href="news_kommersant.html" class="nav-btn">Коммерсантъ</a>
+    </div>
+    
+
+    <div class="container">
+        <div class="stats">
+            <div class="stat">
+                <div class="num">15</div>
+                <div class="label">Новостей</div>
+            </div>
+            <div class="stat">
+                <div class="num">4PDA</div>
+                <div class="label">Источник</div>
+            </div>
+            <div class="stat">
+                <div class="num">29.07</div>
+                <div class="label">Дата</div>
+            </div>
+        </div>
+
+        <div class="news-card" data-cat="tech">
+            <a class="thumb" href="https://4pda.to/2026/07/29/459430/v_windows_11_teper_mozhno_vybirat_datu_ustanovki_obnovlenij/"><img loading="lazy" src="https://4pda.to/s/as6yyukDKePRHKWM8SU7EqeIjcrURGGkalz260r69maj6pRYRnGasz2QPTE0N6.jpg" alt=""></a>
+            <div class="body">
+                <div class="meta">
+                    <span class="tag tech">Софт</span>
+                    <span class="author">✍️ <b>Вадим Макаренко</b></span>
+                    <span class="comments"><a href="https://4pda.to/2026/07/29/459430/v_windows_11_teper_mozhno_vybirat_datu_ustanovki_obnovlenij/">💬 7</a></span>
+                </div>
+                <h2><a href="https://4pda.to/2026/07/29/459430/v_windows_11_teper_mozhno_vybirat_datu_ustanovki_obnovlenij/">В Windows 11 теперь можно выбирать дату установки обновлений</a></h2>
+                <p>Microsoft выпустила предварительное накопительное обновление KB5101681 для Windows 11 26H1, которое включает сразу несколько новых функций и устраняет десятки ошибок. Одним из самых заметных изменений [...]</p>
+            </div>
+        </div>
+        <div class="news-card" data-cat="mobile">
+            <a class="thumb" href="https://4pda.to/2026/07/29/459420/google_ispravila_razdrazhayuschuyu_funktsiyu_v_prilozhenii_foto/"><img loading="lazy" src="https://4pda.to/s/as6yz18yOrxN2iuAtRoLLaIb7iz0pIDlkDoepu3Jv9GqbInz1x418u08ExeVhrp.jpg" alt=""></a>
+            <div class="body">
+                <div class="meta">
+                    <span class="tag mobile">Мобайл</span>
+                    <span class="author">✍️ <b>Вадим Макаренко</b></span>
+                    <span class="comments"><a href="https://4pda.to/2026/07/29/459420/google_ispravila_razdrazhayuschuyu_funktsiyu_v_prilozhenii_foto/">💬 15</a></span>
+                </div>
+                <h2><a href="https://4pda.to/2026/07/29/459420/google_ispravila_razdrazhayuschuyu_funktsiyu_v_prilozhenii_foto/">Google исправила раздражающую функцию в приложении «Фото»</a></h2>
+                <p>Google начала распространять обновление Google Photos 7.85 для Android, добавив несколько небольших, но полезных изменений. Одним из главных нововведений стала возможность отключить подсвечивание [...]</p>
+            </div>
+        </div>
+        <div class="news-card" data-cat="gaming">
+            <a class="thumb" href="https://4pda.to/2026/07/29/459429/alienware_vypustila_igrovoj_ips_monitor_s_chastotoj_280_gts/"><img loading="lazy" src="https://4pda.to/s/as6yuug5Oz2wDM8z1aoFz1ttz28gXakrv5nTQiPvWbEz02PelqtCmJbLDrh2d7tZq.jpg" alt=""></a>
+            <div class="body">
+                <div class="meta">
+                    <span class="tag gaming">Игры</span>
+                    <span class="author">✍️ <b>Виктория Анисимова</b></span>
+                    
+                </div>
+                <h2><a href="https://4pda.to/2026/07/29/459429/alienware_vypustila_igrovoj_ips_monitor_s_chastotoj_280_gts/">Alienware выпустила игровой IPS-монитор с частотой 280 Гц</a></h2>
+                <p>Бренд Alienware выпустил новый геймерский монитор AW2726DL. Модель ориентирована на пользователей, ищущих баланс между высокой скоростью, качеством изображения и точностью цветопередачи по относительно [...]</p>
+            </div>
+        </div>
+        <div class="news-card" data-cat="mobile">
+            <a class="thumb" href="https://4pda.to/2026/07/29/459424/xiaomi_predstavila_kompaktnyj_ibp_razmerom_s_adapter_pitaniya/"><img loading="lazy" src="https://4pda.to/s/as6yvZCHRHbUz1tcJllqTSyAz0FJsRohaheIhps1X2P7hicP1z2XvtR15MKQx.jpg" alt=""></a>
+            <div class="body">
+                <div class="meta">
+                    <span class="tag mobile">Мобайл</span>
+                    <span class="author">✍️ <b>Шамиль Алиуллов</b></span>
+                    <span class="comments"><a href="https://4pda.to/2026/07/29/459424/xiaomi_predstavila_kompaktnyj_ibp_razmerom_s_adapter_pitaniya/">💬 17</a></span>
+                </div>
+                <h2><a href="https://4pda.to/2026/07/29/459424/xiaomi_predstavila_kompaktnyj_ibp_razmerom_s_adapter_pitaniya/">Xiaomi представила компактный ИБП размером с адаптер питания</a></h2>
+                <p>В ассортименте Xiaomi появился необычный источник бесперебойного питания. Аксессуар напоминает адаптер питания ноутбука, но оснащён встроенным аккумулятором и минимальным набором функций недорогого ИБП. Xiaomi [...]</p>
+            </div>
+        </div>
+        <div class="news-card" data-cat="gaming">
+            <a class="thumb" href="https://4pda.to/2026/07/29/459403/ne_vykhodi_iz_komnaty_genri_kavill_sbegaet_ot_svoej_populyarnosti_v_videoigry/"><img loading="lazy" src="https://4pda.to/s/as6yz2xg57XvOh3ivubJB7rW3DNCear9PJAQBEIM.png" alt=""></a>
+            <div class="body">
+                <div class="meta">
+                    <span class="tag gaming">Игры</span>
+                    <span class="author">✍️ <b>Александр Козьяков</b></span>
+                    <span class="comments"><a href="https://4pda.to/2026/07/29/459403/ne_vykhodi_iz_komnaty_genri_kavill_sbegaet_ot_svoej_populyarnosti_v_videoigry/">💬 6</a></span>
+                </div>
+                <h2><a href="https://4pda.to/2026/07/29/459403/ne_vykhodi_iz_komnaty_genri_kavill_sbegaet_ot_svoej_populyarnosti_v_videoigry/">Не выходи из комнаты. Генри Кавилл сбегает от своей популярности в видеоигры</a></h2>
+                <p>Генри Кавилл продолжает работу над сериалом Warhammer 40,000 — который недавно обзавёлся сценаристом. Однако речь пойдёт о другом: в интервью актёр признался, что много играет в компьютер из-за своей популярности. В [...…</p>
+            </div>
+        </div>
+        <div class="news-card" data-cat="tech">
+            <a class="thumb" href="https://4pda.to/2026/07/29/459425/v_2gis_poyavilas_navigatsiya_v_usloviyakh_polnogo_otsutstviya_svyazi/"><img loading="lazy" src="https://4pda.to/s/as6ywymstz1fml9TYYSyZ3VX0heCe45HbL52t8z0U.jpg" alt=""></a>
+            <div class="body">
+                <div class="meta">
+                    <span class="tag tech">Техника</span>
+                    <span class="author">✍️ <b>Виктория Анисимова</b></span>
+                    <span class="comments"><a href="https://4pda.to/2026/07/29/459425/v_2gis_poyavilas_navigatsiya_v_usloviyakh_polnogo_otsutstviya_svyazi/">💬 43</a></span>
+                </div>
+                <h2><a href="https://4pda.to/2026/07/29/459425/v_2gis_poyavilas_navigatsiya_v_usloviyakh_polnogo_otsutstviya_svyazi/">В «2ГИС» появилась навигация в условиях полного отсутствия связи</a></h2>
+                <p>Российский навигационный сервис «2ГИС» получил новую технологию, которая помогает ему ориентироваться на месте в условиях полного отсутствия внешних сигналов, будь то сотовая связь, Wi-Fi или GPS. Вместо [...]</p>
+            </div>
+        </div>
+        <div class="news-card" data-cat="tech">
+            <a class="thumb" href="https://4pda.to/2026/07/29/459428/colorful_vypustila_noutbuk_so_120_gertsevym_ekranom_i_moschnym_chipom_amd/"><img loading="lazy" src="https://4pda.to/s/as6yz1WCG2Esh3GSehgfpPwdBIELbGYjhjuxiXce2Y9WRcQ1jcKk74GecaXau.jpg" alt=""></a>
+            <div class="body">
+                <div class="meta">
+                    <span class="tag tech">Техника</span>
+                    <span class="author">✍️ <b>Шамиль Алиуллов</b></span>
+                    <span class="comments"><a href="https://4pda.to/2026/07/29/459428/colorful_vypustila_noutbuk_so_120_gertsevym_ekranom_i_moschnym_chipom_amd/">💬 6</a></span>
+                </div>
+                <h2><a href="https://4pda.to/2026/07/29/459428/colorful_vypustila_noutbuk_so_120_gertsevym_ekranom_i_moschnym_chipom_amd/">Colorful выпустила ноутбук со 120-герцевым экраном и мощным чипом AMD</a></h2>
+                <p>Компания Colorful анонсировала ноутбук среднего класса с 16-дюймовым 120-герцевым экраном. Ещё он примечателен восьмиядерным процессором AMD и мощной встроенной графикой. Colorful Rimbook [...]</p>
+            </div>
+        </div>
+        <div class="news-card" data-cat="gaming">
+            <a class="thumb" href="https://4pda.to/2026/07/29/459406/vopros_vyzhivaniya_v_studii_legendarnogo_tima_shejfera_proshli_sokrascheniya/"><img loading="lazy" src="https://4pda.to/s/as6yz18SOLhVLDbPPGaWsz1jpQoUlKcRqM9w3HSNkS1ghdfz1oEmIbFuZELDPq0yFZ.jpg" alt=""></a>
+            <div class="body">
+                <div class="meta">
+                    <span class="tag gaming">Игры</span>
+                    <span class="author">✍️ <b>Александр Козьяков</b></span>
+                    <span class="comments"><a href="https://4pda.to/2026/07/29/459406/vopros_vyzhivaniya_v_studii_legendarnogo_tima_shejfera_proshli_sokrascheniya/">💬 4</a></span>
+                </div>
+                <h2><a href="https://4pda.to/2026/07/29/459406/vopros_vyzhivaniya_v_studii_legendarnogo_tima_shejfera_proshli_sokrascheniya/">Вопрос выживания. В студии легендарного Тима Шейфера прошли сокращения</a></h2>
+                <p>Игры студии Тима Шейфера наводили на закономерный вопрос: доколе? Выразительные, но не самые популярные адвенчуры явно стоили больше, чем зарабатывали. И вот ответ: в Double Fine Games прошли сокращения. Double [...]</p>
+            </div>
+        </div>
+        <div class="news-card" data-cat="tech">
+            <a class="thumb" href="https://4pda.to/2026/07/29/459381/obzor_hisense_c3_proektsiya_drugogo_urovnya/"><img loading="lazy" src="https://4pda.to/s/as6yyiseDt9Zz0gR4bnpAJX9fdJcHB0cPmDgdJRjhbbEm4F0EmJ2fFYL3TECS.jpg" alt=""></a>
+            <div class="body">
+                <div class="meta">
+                    <span class="tag tech">Техника</span>
+                    <span class="author">✍️ <b>Владимир Корхут</b></span>
+                    <span class="comments"><a href="https://4pda.to/2026/07/29/459381/obzor_hisense_c3_proektsiya_drugogo_urovnya/">💬 7</a></span>
+                </div>
+                <h2><a href="https://4pda.to/2026/07/29/459381/obzor_hisense_c3_proektsiya_drugogo_urovnya/">Обзор Hisense C3: проекция другого уровня</a></h2>
+                <p>Hisense C3 — проектор нового поколения, который не требует от пользователя соблюдения строгих правил ради превосходной картинки. Симпатичный снаружи и максимально технологичный внутри, он обещает стать [...]</p>
+            </div>
+        </div>
+        <div class="news-card" data-cat="gaming">
+            <a class="thumb" href="https://4pda.to/2026/07/29/459422/huawei_anonsirovala_novyj_leptop_s_gibkim_ekranom_i_ultrabuk_vesom_798_g/"><img loading="lazy" src="https://4pda.to/s/as6yvZCHRHbUz1tspz2lGNaLvh2NYpnkyWV5z1bUlVxMYj3DsxcNz1ZKP4Tt.jpg" alt=""></a>
+            <div class="body">
+                <div class="meta">
+                    <span class="tag gaming">Игры</span>
+                    <span class="author">✍️ <b>Шамиль Алиуллов</b></span>
+                    <span class="comments"><a href="https://4pda.to/2026/07/29/459422/huawei_anonsirovala_novyj_leptop_s_gibkim_ekranom_i_ultrabuk_vesom_798_g/">💬 10</a></span>
+                </div>
+                <h2><a href="https://4pda.to/2026/07/29/459422/huawei_anonsirovala_novyj_leptop_s_gibkim_ekranom_i_ultrabuk_vesom_798_g/">HUAWEI анонсировала новый лэптоп с гибким экраном и ультрабук весом 798 г</a></h2>
+                <p>Компания HUAWEI объявила дату презентации своих новинок и сообщила, какие устройства готовит к премьере. В список войдут новая модель ноутбука MateBook Fold с гибким дисплеем, а также ультралёгкая классическая [...]</p>
+            </div>
+        </div>
+        <div class="news-card" data-cat="mobile">
+            <a class="thumb" href="https://4pda.to/2026/07/29/459421/predstavlen_planshet_lenovo_tab_k11_gen_2_dlya_biznesa_i_uchyoby/"><img loading="lazy" src="https://4pda.to/s/as6yy8Ez2EMDAcz1fmFnnz1sEAYz19z2sNhQN8G3qkYE.jpg" alt=""></a>
+            <div class="body">
+                <div class="meta">
+                    <span class="tag mobile">Мобайл</span>
+                    <span class="author">✍️ <b>Виктория Анисимова</b></span>
+                    <span class="comments"><a href="https://4pda.to/2026/07/29/459421/predstavlen_planshet_lenovo_tab_k11_gen_2_dlya_biznesa_i_uchyoby/">💬 7</a></span>
+                </div>
+                <h2><a href="https://4pda.to/2026/07/29/459421/predstavlen_planshet_lenovo_tab_k11_gen_2_dlya_biznesa_i_uchyoby/">Представлен планшет Lenovo Tab K11 Gen 2 для бизнеса и учёбы</a></h2>
+                <p>Компания Lenovo выпустила Android-планшет Tab K11 Gen 2. Устройство позиционируется как среднебюджетное решение с современным набором функций и стабильной производительностью в повседневных задачах. Lenovo Tab [...]</p>
+            </div>
+        </div>
+        <div class="news-card" data-cat="gaming">
+            <a class="thumb" href="https://4pda.to/2026/07/29/459401/v_steam_startovala_rasprodazha_polskikh_igr_s_bolshimi_skidkami/"><img loading="lazy" src="https://4pda.to/s/as6yqaz1qYMz0xYRmz2WUjvEHndUKCwdHXaDSyni7cQCdjUOsV6FNSOmST7mnW.jpg" alt=""></a>
+            <div class="body">
+                <div class="meta">
+                    <span class="tag gaming">Игры</span>
+                    <span class="author">✍️ <b>Александр Козьяков</b></span>
+                    <span class="comments"><a href="https://4pda.to/2026/07/29/459401/v_steam_startovala_rasprodazha_polskikh_igr_s_bolshimi_skidkami/">💬 16</a></span>
+                </div>
+                <h2><a href="https://4pda.to/2026/07/29/459401/v_steam_startovala_rasprodazha_polskikh_igr_s_bolshimi_skidkami/">В Steam стартовала распродажа польских игр с большими скидками</a></h2>
+                <p>В Steam стартовала новая распродажа — на сей раз скидки выдавались по национальному признаку. Распродажа From Poland with Love предлагает закупиться играми, сделанными в Польше. Однозначными лидерами [...]</p>
+            </div>
+        </div>
+        <div class="news-card" data-cat="tech">
+            <a class="thumb" href="https://4pda.to/2026/07/29/459419/gmktec_predstavila_kompaktnye_no_moschnye_desktopy_s_videokartami_rtx_50/"><img loading="lazy" src="https://4pda.to/s/as6yvZCHRHbUz1tcJltK50Aj8RtECtYpl2puz0DBGvp6eAPPXl9TDo6fOFWI.jpg" alt=""></a>
+            <div class="body">
+                <div class="meta">
+                    <span class="tag tech">Техника</span>
+                    <span class="author">✍️ <b>Шамиль Алиуллов</b></span>
+                    <span class="comments"><a href="https://4pda.to/2026/07/29/459419/gmktec_predstavila_kompaktnye_no_moschnye_desktopy_s_videokartami_rtx_50/">💬 12</a></span>
+                </div>
+                <h2><a href="https://4pda.to/2026/07/29/459419/gmktec_predstavila_kompaktnye_no_moschnye_desktopy_s_videokartami_rtx_50/">GMKtec представила компактные, но мощные десктопы с видеокартами RTX 50</a></h2>
+                <p>Компания GMKtec выпустила два компьютера серии NEO X1 с процессорами AMD и видеокартами NVIDIA GeForce RTX 50. Новинки сочетают высокую мощность с компактными габаритами и оснащаются ручками для удобства [...]</p>
+            </div>
+        </div>
+        <div class="news-card" data-cat="mobile">
+            <a class="thumb" href="https://4pda.to/2026/07/29/459418/oppo_find_x9_ultra_voshyol_v_trojku_luchshikh_kamerofonov_po_versii_dxomark/"><img loading="lazy" src="https://4pda.to/s/as6yqaz1qYMz0xYRmz2WUz0PG5JoR7klcIdhrG2oAucQCdDEmor7CHJ0CwY7mHG.jpg" alt=""></a>
+            <div class="body">
+                <div class="meta">
+                    <span class="tag mobile">Мобайл</span>
+                    <span class="author">✍️ <b>Виктория Анисимова</b></span>
+                    <span class="comments"><a href="https://4pda.to/2026/07/29/459418/oppo_find_x9_ultra_voshyol_v_trojku_luchshikh_kamerofonov_po_versii_dxomark/">💬 55</a></span>
+                </div>
+                <h2><a href="https://4pda.to/2026/07/29/459418/oppo_find_x9_ultra_voshyol_v_trojku_luchshikh_kamerofonov_po_versii_dxomark/">OPPO Find X9 Ultra вошёл в тройку лучших камерофонов по версии DxOMark</a></h2>
+                <p>Специалисты лаборатории DxOMark протестировали возможности камер смартфона OPPO Find X9 Ultra. По результатам испытаний китайский флагман не смог занять первое место, но всё же вошёл в тройку лучших, а также [...]</p>
+            </div>
+        </div>
+        <div class="news-card" data-cat="tech">
+            <a class="thumb" href="https://4pda.to/2026/07/29/459404/serial_warhammer_40_000_s_genri_kavillom_nashyol_stsenarista_i_rezhissyora_im_stanet_majk_flenagan/"><img loading="lazy" src="https://4pda.to/s/as6yxtMm8psPtw313ewFH9hUJeg5dnnCf65z1qxWr4JVZz0lWcVVegDva8ejM.jpg" alt=""></a>
+            <div class="body">
+                <div class="meta">
+                    <span class="tag tech">Техника</span>
+                    <span class="author">✍️ <b>Александр Козьяков</b></span>
+                    <span class="comments"><a href="https://4pda.to/2026/07/29/459404/serial_warhammer_40_000_s_genri_kavillom_nashyol_stsenarista_i_rezhissyora_im_stanet_majk_flenagan/">💬 13</a></span>
+                </div>
+                <h2><a href="https://4pda.to/2026/07/29/459404/serial_warhammer_40_000_s_genri_kavillom_nashyol_stsenarista_i_rezhissyora_im_stanet_majk_flenagan/">Сериал Warhammer 40,000 с Генри Кавиллом нашёл сценариста и режиссёра — им станет Майк Флэнаган</a></h2>
+                <p>По информации Deadline, в экранизации Warhammer 40,000 наметился ощутимый прогресс — шоу ведёт переговоры с перспективным сценаристом и режиссёром. [caption width=&quot;480&quot; caption=&quot;Майк Флэнаган&quot;][/caption] Майк [...]</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>Автоматический дайджест от <a href="https://aqvon.ru">AQVON</a> • Powered by <strong>Яной</strong> 💕</p>
+        <p style="margin-top: 8px;">Источник: 4PDA • Данные актуальны на момент публикации</p>
+    </div>
+    <script>
+    (function(){
+      var c=document.getElementById('particles');if(!c)return;
+      var ctx=c.getContext('2d'),W,H,particles=[],N=40,raf;
+      function resize(){W=c.width=innerWidth;H=c.height=innerHeight;}
+      resize();addEventListener('resize',resize);
+      for(var i=0;i<N;i++)particles.push({
+        x:Math.random()*2000,y:Math.random()*2000,
+        r:Math.random()*4+2,
+        vx:(Math.random()-.5)*.4,vy:(Math.random()-.5)*.4,
+        o:Math.random()*.4+.3
+      });
+      function draw(){
+        ctx.clearRect(0,0,W,H);
+        var col=getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
+        ctx.shadowBlur=20;ctx.shadowColor=col;ctx.fillStyle=col;
+        for(var i=0;i<N;i++){
+          var p=particles[i];p.x+=p.vx;p.y+=p.vy;
+          if(p.x<-20)p.x=W+20;if(p.x>W+20)p.x=-20;
+          if(p.y<-20)p.y=H+20;if(p.y>H+20)p.y=-20;
+          ctx.globalAlpha=p.o;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,6.283);ctx.fill();
+        }
+        ctx.shadowBlur=0;ctx.globalAlpha=1;
+        raf=requestAnimationFrame(draw);
+      }
+      if(!matchMedia('(prefers-reduced-motion: reduce)').matches)draw();
+    })();
+    </script>
+</body>
+</html>

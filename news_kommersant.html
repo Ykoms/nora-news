@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Дайджест новостей — Коммерсантъ • AQVON</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <style>
+:root {
+    --bg:#08090a; --surface:rgba(15,16,17,.7); --border:rgba(255,255,255,.05);
+    --text:#f7f8f8; --text-dim:rgba(255,255,255,.65); --accent:#5e6ad2;
+    --tag-tech:#5e6ad2; --tag-gaming:#00d4ff; --tag-mobile:#10b981; --tag-ai:#f97316; --tag-deals:#ec4899;
+    --glass:rgba(255,255,255,.06); --glass-border:rgba(255,255,255,.1); --glass-blur:blur(16px);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{background:var(--bg);}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:transparent;color:var(--text);line-height:1.6;}
+.aurora{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-2;overflow:hidden;pointer-events:none;}
+.blob{position:absolute;border-radius:50%;filter:blur(90px);will-change:transform;}
+.b1{width:600px;height:600px;background:#6366f1;opacity:.7;top:-15%;left:5%;animation:aurora1 18s ease-in-out infinite;}
+.b2{width:550px;height:550px;background:#a855f7;opacity:.65;bottom:5%;right:5%;animation:aurora2 22s ease-in-out infinite;}
+.b3{width:500px;height:500px;background:#f43f5e;opacity:.5;top:35%;left:45%;animation:aurora3 20s ease-in-out infinite;}
+@keyframes aurora1{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(80px,60px) scale(1.1)}66%{transform:translate(-40px,30px) scale(.95)}}
+@keyframes aurora2{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(-60px,-40px) scale(1.05)}66%{transform:translate(50px,-70px) scale(.9)}}
+@keyframes aurora3{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-80px,50px) scale(1.15)}}
+.header{background:var(--grad);padding:40px 20px;text-align:center;border-bottom:1px solid var(--glass-border);position:relative;}
+.header h1{font-size:2.2em;color:var(--text);margin-bottom:8px;letter-spacing:-.5px;}
+.header h1 span{color:var(--accent);}
+.header .subtitle{color:var(--text-dim);font-size:1em;}
+.header .date{color:var(--accent);font-size:.9em;margin-top:8px;font-weight:600;}
+.source-nav{display:flex;justify-content:center;gap:8px;padding:12px 20px;position:sticky;top:0;z-index:100;background:rgba(8,9,10,.7);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--glass-border);}
+.nav-btn{border:1px solid var(--glass-border);background:transparent;color:var(--text-dim);padding:6px 16px;border-radius:20px;cursor:pointer;font-size:.82em;transition:all .2s;font-family:inherit;text-decoration:none;}
+.nav-btn:hover,.nav-btn.active{border-color:var(--accent);color:var(--text);background:rgba(94,106,210,.15);}
+.container{max-width:900px;margin:0 auto;padding:30px 20px;}
+.stats{display:flex;justify-content:center;gap:30px;padding:20px;background:var(--glass);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border:1px solid var(--glass-border);border-radius:16px;margin:-20px auto 30px;max-width:500px;position:relative;z-index:1;}
+.stat{text-align:center;}
+.stat .num{font-size:1.8em;color:var(--accent);font-weight:700;}
+.stat .label{color:var(--text-dim);font-size:.85em;}
+.news-card{display:flex;gap:16px;background:var(--glass);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:blur(16px);border:1px solid var(--glass-border);border-radius:18px;padding:18px;margin-bottom:18px;transition:all .25s ease;position:relative;overflow:hidden;}
+.news-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;border-radius:18px 0 0 18px;background:var(--accent);}
+.news-card[data-cat="tech"]::before{background:linear-gradient(180deg,var(--tag-tech),#00d4ff);}
+.news-card[data-cat="gaming"]::before{background:linear-gradient(180deg,#533483,var(--tag-gaming));}
+.news-card[data-cat="mobile"]::before{background:linear-gradient(180deg,var(--tag-mobile),#34d399);}
+.news-card[data-cat="ai"]::before{background:linear-gradient(180deg,var(--tag-ai),#fbbf24);}
+.news-card[data-cat="deals"]::before{background:linear-gradient(180deg,var(--tag-deals),#f472b6);}
+.news-card:hover{transform:translateY(-3px);border-color:rgba(255,255,255,.12);}
+.news-card[data-cat="tech"]:hover{box-shadow:0 8px 32px rgba(94,106,210,.2);}
+.news-card[data-cat="gaming"]:hover{box-shadow:0 8px 32px rgba(0,212,255,.2);}
+.news-card[data-cat="mobile"]:hover{box-shadow:0 8px 32px rgba(16,185,129,.2);}
+.news-card[data-cat="ai"]:hover{box-shadow:0 8px 32px rgba(249,115,22,.2);}
+.news-card[data-cat="deals"]:hover{box-shadow:0 8px 32px rgba(236,72,153,.2);}
+.news-card .thumb{flex-shrink:0;width:140px;height:100px;border-radius:12px;overflow:hidden;background:var(--tag-tech);position:relative;}
+.news-card .thumb img{width:100%;height:100%;object-fit:cover;display:block;}
+.news-card .thumb::after{content:'';position:absolute;bottom:0;left:0;right:0;height:40%;background:linear-gradient(transparent,rgba(0,0,0,.5));pointer-events:none;}
+.news-card .body{flex:1;min-width:0;}
+.news-card .meta{display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap;}
+.news-card .tag{color:#fff;padding:3px 10px;border-radius:20px;font-size:.72em;font-weight:600;text-transform:uppercase;transition:box-shadow .3s;}
+.news-card .tag.tech{background:var(--tag-tech);box-shadow:0 0 8px rgba(94,106,210,.3);}
+.news-card .tag.gaming{background:var(--tag-gaming);box-shadow:0 0 8px rgba(0,212,255,.3);}
+.news-card .tag.mobile{background:var(--tag-mobile);box-shadow:0 0 8px rgba(16,185,129,.3);}
+.news-card .tag.ai{background:var(--tag-ai);box-shadow:0 0 10px rgba(249,115,22,.4);animation:pulse 2s infinite;}
+.news-card .tag.deals{background:var(--tag-deals);box-shadow:0 0 8px rgba(236,72,153,.3);}
+@keyframes pulse{0%,100%{box-shadow:0 0 8px rgba(249,115,22,.3)}50%{box-shadow:0 0 18px rgba(249,115,22,.6)}}
+.news-card .author{color:var(--text-dim);font-size:.82em;}
+.news-card .author b{color:var(--text);font-weight:600;}
+.news-card .comments{color:var(--text-dim);font-size:.82em;margin-left:auto;}
+.news-card .comments a{color:var(--text-dim);text-decoration:none;}
+.news-card .comments a:hover{color:var(--accent);}
+.news-card h2{font-size:1.12em;color:var(--text);margin-bottom:8px;line-height:1.35;}
+.news-card h2 a{color:#f5f5f7;text-decoration:none;}
+.news-card h2 a:hover{color:var(--accent);}
+.news-card p{color:var(--text-dim);font-size:.9em;text-shadow:0 1px 4px rgba(0,0,0,.6);}
+.footer{text-align:center;padding:30px;color:var(--text-dim);font-size:.85em;border-top:1px solid var(--glass-border);}
+.footer a{color:var(--accent);text-decoration:none;}
+@media(max-width:600px){
+    .header h1{font-size:1.6em;}
+    .stats{flex-direction:column;gap:15px;}
+    .source-nav{gap:6px;padding:10px 12px;}
+    .nav-btn{padding:5px 12px;font-size:.78em;}
+    .news-card{display:block;overflow:hidden;}
+    .news-card .thumb{float:left;width:38%;max-width:150px;height:auto;margin:0 12px 6px 0;border-radius:12px;}
+    .news-card .thumb img{height:auto;}
+    .news-card .body{display:block;}
+    .news-card .meta{margin-bottom:6px;gap:8px;}
+    .news-card .comments{margin-left:0;}
+    .news-card h2{font-size:1.02em;margin-bottom:6px;}
+    .news-card p{font-size:.88em;}
+    .blob{filter:blur(80px);}
+    .b1{width:300px;height:300px;}
+    .b2{width:250px;height:250px;}
+    .b3{width:200px;height:200px;}
+}
+#particles{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;pointer-events:none;}
+
+    </style>
+</head>
+<body>
+<canvas id="particles"></canvas>
+<div class="aurora"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div></div>
+    <div class="header">
+        <h1><span>AQVON</span> News Digest</h1>
+        <div class="subtitle">Дайджест технологических новостей</div>
+        <div class="date">📅 29 июля 2026 • Обновлено 17:50 МСК</div>
+    </div>
+
+    
+    <div class="source-nav">
+        <a href="news_kommersant.html" class="nav-btn active">Коммерсантъ</a>
+        <a href="news_4pda.html" class="nav-btn">4PDA</a>
+    </div>
+    
+
+    <div class="container">
+        <div class="stats">
+            <div class="stat">
+                <div class="num">15</div>
+                <div class="label">Новостей</div>
+            </div>
+            <div class="stat">
+                <div class="num">Коммерсантъ</div>
+                <div class="label">Источник</div>
+            </div>
+            <div class="stat">
+                <div class="num">29.07</div>
+                <div class="label">Дата</div>
+            </div>
+        </div>
+
+        <div class="news-card" data-cat="tech">
+            <a class="thumb" href="https://www.kommersant.ru/doc/8847613"><img loading="lazy" src="https://im2.kommersant.ru/SocialPics/8847613_49_0_731937068" alt=""></a>
+            <div class="body">
+                <div class="meta">
+                    <span class="tag tech">Бизнес</span>
+                    <span class="author">✍️ <b>Бизнес</b></span>
+                    
+                </div>
+                <h2><a href="https://www.kommersant.ru/doc/8847613">Домодедово анонсировал очередной этап реорганизации</a></h2>
+                <p>ООО «Домодедово международный аэропорт» (ДМА) проведет реорганизацию в форме присоединения 15 компаний, следует из данных Федресурса. Решение приняла владеющая активами группы ООО «Перспектива» — дочерняя структура «Межд…</p>
+            </div>
+        </div>
+        <div class="news-card" data-cat="tech">
+            <a class="thumb" href="https://www.kommersant.ru/doc/8847616"><img loading="lazy" src="https://iv.kommersant.ru/SocialPics/8847616_49_0_676106925" alt=""></a>
+            <div class="body">
+                <div class="meta">
+                    <span class="tag tech">Бизнес</span>
+                    <span class="author">✍️ <b>Бизнес</b></span>
+                    
+                </div>
+                <h2><a href="https://www.kommersant.ru/doc/8847616">Золото опустилось ниже $4 тыс. за унцию впервые с 20 июля</a></h2>
+                <p>Стоимость августовского фьючерса на золото составила $3,993 тыс. за тройскую унцию (-1,11%), следует из данных биржи Comex к 17:13 мск. Драгметалл опустился ниже $4 тыс. за унцию впервые с 20 июля 2026 года.</p>
+            </div>
+        </div>
+        <div class="news-card" data-cat="tech">
+            <a class="thumb" href="https://www.kommersant.ru/doc/8847602"><img loading="lazy" src="https://im2.kommersant.ru/SocialPics/8847602_49_3171567_243491648" alt=""></a>
+            <div class="body">
+                <div class="meta">
+                    <span class="tag tech">Мир</span>
+                    <span class="author">✍️ <b>Мир</b></span>
+                    
+                </div>
+                <h2><a href="https://www.kommersant.ru/doc/8847602">Трамп попросил суд освободить его от выплаты $83,4 млн по делу о клевете</a></h2>
+                <p>Президент США Дональд Трамп призвал Верховный суд США пересмотреть приговор 2024 года, по которому он должен выплатить писательнице и журналистке Элизабет Джин Кэрролл $83,4 млн по делу о клевете. Об этом написали америк…</p>
+            </div>
+        </div>
+        <div class="news-card" data-cat="tech">
+            <a class="thumb" href="https://www.kommersant.ru/doc/8847615"><img loading="lazy" src="https://iv.kommersant.ru/SocialPics/8847615_49_3171568_1401062459" alt=""></a>
+            <div class="body">
+                <div class="meta">
+                    <span class="tag tech">Спорт</span>
+                    <span class="author">✍️ <b>Спорт</b></span>
+                    
+                </div>
+                <h2><a href="https://www.kommersant.ru/doc/8847615">Участник ЧМ-2026 Ленини продлил контракт с «Краснодаром»</a></h2>
+                <p>Полузащитник сборной Кабо-Верде Кевин Ленини продлил соглашение с футбольным клубом «Краснодар». Об этом сообщает пресс-служба команды.</p>
+            </div>
+        </div>
+        <div class="news-card" data-cat="tech">
+            <a class="thumb" href="https://www.kommersant.ru/doc/8847601"><img loading="lazy" src="https://im2.kommersant.ru/SocialPics/8847601_49_0_805851637" alt=""></a>
+            <div class="body">
+                <div class="meta">
+                    <span class="tag tech">Происшествия</span>
+                    <span class="author">✍️ <b>Происшествия</b></span>
+                    
+                </div>
+                <h2><a href="https://www.kommersant.ru/doc/8847601">Монах погиб при ударе дрона в ЛНР</a></h2>
+                <p>В Троицком районе ЛНР при ударе дрона Hornet погиб доброволец, насельник Иоанно-Богословского Череменецкого монастыря Гатчинской епархии монах Рафаил (Анисимов). Также ранен иеромонах Иларион (Качур).</p>
+            </div>
+        </div>
+        <div class="news-card" data-cat="tech">
+            <a class="thumb" href="https://www.kommersant.ru/doc/8847591"><img loading="lazy" src="https://iv.kommersant.ru/SocialPics/8847591_49_0_2102326960" alt=""></a>
+            <div class="body">
+                <div class="meta">
+                    <span class="tag tech">Происшествия</span>
+                    <span class="author">✍️ <b>Происшествия</b></span>
+                    
+                </div>
+                <h2><a href="https://www.kommersant.ru/doc/8847591">Двое крымчан получили большие сроки за госизмену и хранение взрывчатки</a></h2>
+                <p>Верховный суд Крыма приговорил двух местных жителей к 21 и 22 годам колонии строгого режима за госизмену и незаконное хранение взрывчатых веществ. Об этом сообщили в пресс-службе прокуратуры Республики Крым.</p>
+            </div>
+        </div>
+        <div class="news-card" data-cat="tech">
+            <a class="thumb" href="https://www.kommersant.ru/doc/8847585"><img loading="lazy" src="https://im2.kommersant.ru/SocialPics/8847585_49_0_1159600659" alt=""></a>
+            <div class="body">
+                <div class="meta">
+                    <span class="tag tech">Мир</span>
+                    <span class="author">✍️ <b>Мир</b></span>
+                    
+                </div>
+                <h2><a href="https://www.kommersant.ru/doc/8847585">В Турции задержали члена оппозиционной партии страны по подозрению в коррупции</a></h2>
+                <p>Мэр стамбульского района Ускюдар и член турецкой оппозиционной Республиканской народной партии (CHP) Синем Дедеташ задержана по подозрению в коррупции. Об этом пишет издание Daily Sabah.</p>
+            </div>
+        </div>
+        <div class="news-card" data-cat="tech">
+            <a class="thumb" href="https://www.kommersant.ru/doc/8847592"><img loading="lazy" src="https://im2.kommersant.ru/SocialPics/8847592_49_0_2136153065" alt=""></a>
+            <div class="body">
+                <div class="meta">
+                    <span class="tag tech">Бизнес</span>
+                    <span class="author">✍️ <b>Бизнес</b></span>
+                    
+                </div>
+                <h2><a href="https://www.kommersant.ru/doc/8847592">Компания BMW сократит 8 тыс. рабочих мест</a></h2>
+                <p>BMW планирует к 2028 году сократить 8 тыс. рабочих мест в связи с падением продаж на ключевом китайском рынке, сообщает The Wall Street Journal. Во втором квартале продажи автомобилей BMW в Китае упали на 30% по сравнени…</p>
+            </div>
+        </div>
+        <div class="news-card" data-cat="tech">
+            <a class="thumb" href="https://www.kommersant.ru/doc/8847598"><img loading="lazy" src="https://im2.kommersant.ru/SocialPics/8847598_49_3171528_715051533" alt=""></a>
+            <div class="body">
+                <div class="meta">
+                    <span class="tag tech">Мир</span>
+                    <span class="author">✍️ <b>Мир</b></span>
+                    
+                </div>
+                <h2><a href="https://www.kommersant.ru/doc/8847598">Лавров назвал ультиматумом условия Запада по Украине</a></h2>
+                <p>Министр иностранных дел Сергей Лавров в интервью телеканалу «Россия 24» заявил, что условия, которые западные страны называют по урегулированию конфликта на Украине, представляют из себя ультиматум. «Запад сейчас нам гов…</p>
+            </div>
+        </div>
+        <div class="news-card" data-cat="tech">
+            <a class="thumb" href="https://www.kommersant.ru/doc/8847582"><img loading="lazy" src="https://iv.kommersant.ru/SocialPics/8847582_49_0_1777720932" alt=""></a>
+            <div class="body">
+                <div class="meta">
+                    <span class="tag tech">Мир</span>
+                    <span class="author">✍️ <b>Мир</b></span>
+                    
+                </div>
+                <h2><a href="https://www.kommersant.ru/doc/8847582">Французский адвокат исключил экстрадицию Павла Дурова в Россию</a></h2>
+                <p>Основатель Telegram Павел Дуров помимо российского имеет гражданства Франции, ОАЭ, а также Сент-Китс и Невис. По этой причине Париж не будет экстрадировать его в Россию, заявил ТАСС французский адвокат Филипп де Вель.</p>
+            </div>
+        </div>
+        <div class="news-card" data-cat="tech">
+            <a class="thumb" href="https://www.kommersant.ru/doc/8847595"><img loading="lazy" src="https://iv.kommersant.ru/SocialPics/8847595_49_0_1791634844" alt=""></a>
+            <div class="body">
+                <div class="meta">
+                    <span class="tag tech">Новости</span>
+                    <span class="author">✍️ <b>Новости</b></span>
+                    
+                </div>
+                <h2><a href="https://www.kommersant.ru/doc/8847595">ФСБ и СКР ищут основателя Telegram Павла Дурова</a></h2>
+                <p>Сразу два ведомства — ФСБ и СКР — возбудили уголовные дела, фигурантом которых является основатель мессенджера Telegram Павел Дуров. Спецслужба уже заочно обвинила его в содействии террористической деятельности и объявил…</p>
+            </div>
+        </div>
+        <div class="news-card" data-cat="tech">
+            <a class="thumb" href="https://www.kommersant.ru/doc/8847529"><img loading="lazy" src="https://im2.kommersant.ru/SocialPics/8847529_49_3171518_1318684403" alt=""></a>
+            <div class="body">
+                <div class="meta">
+                    <span class="tag tech">Мир</span>
+                    <span class="author">✍️ <b>Мир</b></span>
+                    
+                </div>
+                <h2><a href="https://www.kommersant.ru/doc/8847529">Бывшего руководителя бюро RT намерены выслать из Франции</a></h2>
+                <p>Префектура парижской полиции издала предписание покинуть Францию российской журналистке, бывшему руководителю бюро RT Ксении Федоровой. Об этом пишет Liberation со ссылкой на источник.</p>
+            </div>
+        </div>
+        <div class="news-card" data-cat="tech">
+            <a class="thumb" href="https://www.kommersant.ru/doc/8847565"><img loading="lazy" src="https://im2.kommersant.ru/SocialPics/8847565_49_0_1559246683" alt=""></a>
+            <div class="body">
+                <div class="meta">
+                    <span class="tag tech">Происшествия</span>
+                    <span class="author">✍️ <b>Происшествия</b></span>
+                    
+                </div>
+                <h2><a href="https://www.kommersant.ru/doc/8847565">Сотрудника прокуратуры Волгограда задержали по обвинению в изнасилованиях</a></h2>
+                <p>24-летнего помощника прокурора Жирновского района Волгоградской области обвинили в изнасиловании несовершеннолетней. Об этом сообщила пресс-служба Следственного комитета России.</p>
+            </div>
+        </div>
+        <div class="news-card" data-cat="tech">
+            <a class="thumb" href="https://www.kommersant.ru/doc/8847571"><img loading="lazy" src="https://im2.kommersant.ru/SocialPics/8847571_49_0_1503866671" alt=""></a>
+            <div class="body">
+                <div class="meta">
+                    <span class="tag tech">Новости</span>
+                    <span class="author">✍️ <b>Новости</b></span>
+                    
+                </div>
+                <h2><a href="https://www.kommersant.ru/doc/8847571">Украина назвала удар по иранскому сухогрузу непреднамеренным</a></h2>
+                <p>Вечером 28 июля состоялся телефонный разговор главы МИД Ирана Аббаса Аракчи и исполняющего обязанности главы МИД Украины Андрея Сибиги. Господин Сибига заявил о непреднамеренности украинского удара по иранскому сухогрузу…</p>
+            </div>
+        </div>
+        <div class="news-card" data-cat="tech">
+            <a class="thumb" href="https://www.kommersant.ru/doc/8847570"><img loading="lazy" src="https://iv.kommersant.ru/SocialPics/8847570_49_0_1578443691" alt=""></a>
+            <div class="body">
+                <div class="meta">
+                    <span class="tag tech">Новости</span>
+                    <span class="author">✍️ <b>Новости</b></span>
+                    
+                </div>
+                <h2><a href="https://www.kommersant.ru/doc/8847570">Премьер Израиля Нетаньяху провел в Вашингтоне переговоры с президентом Трампом</a></h2>
+                <p>Президент США Дональд Трамп и премьер-министр Израиля Биньямин Нетаньяху провели вечером 28 июля в Белом доме личные переговоры впервые с начала войны в Иране. Премьер-министр попытался убедить своего союзника в необходи…</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>Автоматический дайджест от <a href="https://aqvon.ru">AQVON</a> • Powered by <strong>Яной</strong> 💕</p>
+        <p style="margin-top: 8px;">Источник: Коммерсантъ • Данные актуальны на момент публикации</p>
+    </div>
+    <script>
+    (function(){
+      var c=document.getElementById('particles');if(!c)return;
+      var ctx=c.getContext('2d'),W,H,particles=[],N=40,raf;
+      function resize(){W=c.width=innerWidth;H=c.height=innerHeight;}
+      resize();addEventListener('resize',resize);
+      for(var i=0;i<N;i++)particles.push({
+        x:Math.random()*2000,y:Math.random()*2000,
+        r:Math.random()*4+2,
+        vx:(Math.random()-.5)*.4,vy:(Math.random()-.5)*.4,
+        o:Math.random()*.4+.3
+      });
+      function draw(){
+        ctx.clearRect(0,0,W,H);
+        var col=getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
+        ctx.shadowBlur=20;ctx.shadowColor=col;ctx.fillStyle=col;
+        for(var i=0;i<N;i++){
+          var p=particles[i];p.x+=p.vx;p.y+=p.vy;
+          if(p.x<-20)p.x=W+20;if(p.x>W+20)p.x=-20;
+          if(p.y<-20)p.y=H+20;if(p.y>H+20)p.y=-20;
+          ctx.globalAlpha=p.o;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,6.283);ctx.fill();
+        }
+        ctx.shadowBlur=0;ctx.globalAlpha=1;
+        raf=requestAnimationFrame(draw);
+      }
+      if(!matchMedia('(prefers-reduced-motion: reduce)').matches)draw();
+    })();
+    </script>
+</body>
+</html>
