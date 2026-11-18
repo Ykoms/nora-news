@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Дайджест новостей — AQVON</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <style>
+:root {
+    --bg:#08090a; --surface:rgba(15,16,17,.7); --surface-2:rgba(22,24,26,.75); --border:rgba(255,255,255,.05);
+    --text:#f7f8f8; --text-dim:rgba(255,255,255,.65); --accent:#5e6ad2; --accent-hover:#6e79e0;
+    --tag-tech:#5e6ad2; --tag-gaming:#00d4ff; --tag-mobile:#10b981; --tag-ai:#f97316; --tag-deals:#ec4899;
+    --glass:rgba(255,255,255,.06); --glass-border:rgba(255,255,255,.1); --glass-blur:blur(16px);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{background:var(--bg);}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:transparent;color:var(--text);line-height:1.6;}
+.aurora{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-2;overflow:hidden;pointer-events:none;}
+.blob{position:absolute;border-radius:50%;filter:blur(90px);will-change:transform;}
+.b1{width:600px;height:600px;background:#6366f1;opacity:.7;top:-15%;left:5%;animation:aurora1 18s ease-in-out infinite;}
+.b2{width:550px;height:550px;background:#a855f7;opacity:.65;bottom:5%;right:5%;animation:aurora2 22s ease-in-out infinite;}
+.b3{width:500px;height:500px;background:#f43f5e;opacity:.5;top:35%;left:45%;animation:aurora3 20s ease-in-out infinite;}
+@keyframes aurora1{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(80px,60px) scale(1.1)}66%{transform:translate(-40px,30px) scale(.95)}}
+@keyframes aurora2{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(-60px,-40px) scale(1.05)}66%{transform:translate(50px,-70px) scale(.9)}}
+@keyframes aurora3{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-80px,50px) scale(1.15)}}
+.header{background:var(--grad);padding:40px 20px;text-align:center;border-bottom:1px solid var(--glass-border);position:relative;}
+.header h1{font-size:2.2em;color:var(--text);margin-bottom:8px;letter-spacing:-.5px;}
+.header h1 span{color:var(--accent);}
+.header .subtitle{color:var(--text-dim);font-size:1em;}
+.header .date{color:var(--accent);font-size:.9em;margin-top:8px;font-weight:600;}
+.filter-bar{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;padding:12px 20px;position:sticky;top:0;z-index:100;background:rgba(8,9,10,.7);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--glass-border);}
+.filter-btn{border:1px solid var(--glass-border);background:transparent;color:var(--text-dim);padding:6px 16px;border-radius:20px;cursor:pointer;font-size:.82em;transition:all .2s;font-family:inherit;}
+.filter-btn:hover,.filter-btn.active{border-color:var(--accent);color:var(--text);background:rgba(94,106,210,.15);}
+.container{max-width:900px;margin:0 auto;padding:30px 20px;}
+.stats{display:flex;justify-content:center;gap:30px;padding:20px;background:var(--glass);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border:1px solid var(--glass-border);border-radius:16px;margin:-20px auto 30px;max-width:500px;position:relative;z-index:1;}
+.stat{text-align:center;}
+.stat .num{font-size:1.8em;color:var(--accent);font-weight:700;}
+.stat .label{color:var(--text-dim);font-size:.85em;}
+.news-card{display:flex;gap:16px;background:var(--glass);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border:1px solid var(--glass-border);border-radius:18px;padding:18px;margin-bottom:18px;transition:all .25s ease;position:relative;overflow:hidden;}
+.news-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;border-radius:18px 0 0 18px;background:var(--accent);}
+.news-card[data-cat="tech"]::before{background:linear-gradient(180deg,var(--tag-tech),#00d4ff);}
+.news-card[data-cat="gaming"]::before{background:linear-gradient(180deg,#533483,var(--tag-gaming));}
+.news-card[data-cat="mobile"]::before{background:linear-gradient(180deg,var(--tag-mobile),#34d399);}
+.news-card[data-cat="ai"]::before{background:linear-gradient(180deg,var(--tag-ai),#fbbf24);}
+.news-card[data-cat="deals"]::before{background:linear-gradient(180deg,var(--tag-deals),#f472b6);}
+.news-card:hover{transform:translateY(-3px);border-color:rgba(255,255,255,.12);}
+.news-card[data-cat="tech"]:hover{box-shadow:0 8px 32px rgba(94,106,210,.2);}
+.news-card[data-cat="gaming"]:hover{box-shadow:0 8px 32px rgba(0,212,255,.2);}
+.news-card[data-cat="mobile"]:hover{box-shadow:0 8px 32px rgba(16,185,129,.2);}
+.news-card[data-cat="ai"]:hover{box-shadow:0 8px 32px rgba(249,115,22,.2);}
+.news-card[data-cat="deals"]:hover{box-shadow:0 8px 32px rgba(236,72,153,.2);}
+.news-card .thumb{display:block;flex-shrink:0;width:140px;height:100px;border-radius:12px;overflow:hidden;background:var(--tag-tech);position:relative;}
+.news-card .thumb img{width:100%;height:100%;object-fit:cover;display:block;}
+.news-card .thumb::after{content:'';position:absolute;bottom:0;left:0;right:0;height:40%;background:linear-gradient(transparent,rgba(0,0,0,.5));pointer-events:none;}
+.news-card .body{flex:1;min-width:0;}
+.news-card .meta{display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap;}
+.news-card .tag{color:#fff;padding:3px 10px;border-radius:20px;font-size:.72em;font-weight:600;text-transform:uppercase;transition:box-shadow .3s;}
+.news-card .tag.tech{background:var(--tag-tech);box-shadow:0 0 8px rgba(94,106,210,.3);}
+.news-card .tag.gaming{background:var(--tag-gaming);box-shadow:0 0 8px rgba(0,212,255,.3);}
+.news-card .tag.mobile{background:var(--tag-mobile);box-shadow:0 0 8px rgba(16,185,129,.3);}
+.news-card .tag.ai{background:var(--tag-ai);box-shadow:0 0 10px rgba(249,115,22,.4);animation:pulse 2s infinite;}
+.news-card .tag.deals{background:var(--tag-deals);box-shadow:0 0 8px rgba(236,72,153,.3);}
+@keyframes pulse{0%,100%{box-shadow:0 0 8px rgba(249,115,22,.3)}50%{box-shadow:0 0 18px rgba(249,115,22,.6)}}
+.news-card .author{color:var(--text-dim);font-size:.82em;}
+.news-card .author b{color:var(--text);font-weight:600;}
+.news-card .comments{color:var(--text-dim);font-size:.82em;margin-left:auto;}
+.news-card .comments a{color:var(--text-dim);text-decoration:none;}
+.news-card .comments a:hover{color:var(--accent);}
+.news-card h2{font-size:1.12em;color:var(--text);margin-bottom:8px;line-height:1.35;}
+.news-card h2 a{color:#f5f5f7;text-decoration:none;}
+.news-card h2 a:hover{color:var(--accent);}
+.news-card p{color:var(--text-dim);font-size:.9em;text-shadow:0 1px 4px rgba(0,0,0,.6);}
+.footer{text-align:center;padding:30px;color:var(--text-dim);font-size:.85em;border-top:1px solid var(--glass-border);}
+.footer a{color:var(--accent);text-decoration:none;}
+@media(max-width:600px){
+    .header h1{font-size:1.6em;}
+    .stats{flex-direction:column;gap:15px;}
+    .filter-bar{gap:6px;padding:10px 12px;}
+    .filter-btn{padding:5px 12px;font-size:.78em;}
+    .news-card{display:block;overflow:hidden;}
+    .news-card .thumb{float:left;width:38%;max-width:150px;height:auto;margin:0 12px 6px 0;border-radius:12px;}
+    .news-card .thumb img{height:auto;}
+    .news-card .body{display:block;}
+    .news-card .meta{margin-bottom:6px;gap:8px;}
+    .news-card .comments{margin-left:0;}
+    .news-card h2{font-size:1.02em;margin-bottom:6px;}
+    .news-card p{font-size:.88em;}
+    .blob{filter:blur(80px);}
+    .b1{width:300px;height:300px;}
+    .b2{width:250px;height:250px;}
+    .b3{width:200px;height:200px;}
+}
+#particles{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;pointer-events:none;}
+
+    </style>
+</head>
+<body>
+<canvas id="particles"></canvas>
+<div class="aurora"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div></div>
+    <div class="header">
+        <h1><span>AQVON</span> News Digest</h1>
+        <div class="subtitle">Дайджест технологических новостей</div>
+        <div class="date">📅 18 ноября 2026 • Обновлено 16:00 МСК</div>
+    </div>
+
+    <!-- Source tabs -->
+    <div class="filter-bar source-tabs">
+        <button class="filter-btn active" data-source="4pda">4PDA</button>
+<button class="filter-btn" data-source="kommersant">Коммерсантъ</button>
+    </div>
+    <script>
+    (function(){
+      const btns = document.querySelectorAll('.source-tabs .filter-btn');
+      const sections = document.querySelectorAll('.source-section');
+      function showSource(srcId) {
+        sections.forEach(sec => {
+          sec.style.display = (sec.id === 'section-'+srcId) ? 'block' : 'none';
+        });
+        btns.forEach(btn => {
+          btn.classList.toggle('active', btn.dataset.source === srcId);
+        });
+      }
+      btns.forEach(btn => {
+        btn.onclick = () => showSource(btn.dataset.source);
+      });
+      // Remember last source
+      const last = localStorage.getItem('aqvon-news-source');
+      if(last) showSource(last);
+    });
+    </script>
+
+    <section id="section-4pda" class="source-section">
+        <div class="filter-bar">
+            <button class="filter-btn active" data-cat="all">Все</button>
+            <button class="filter-btn" data-cat="tech">Техника</button>
+            <button class="filter-btn" data-cat="gaming">Игры</button>
+            <button class="filter-btn" data-cat="mobile">Мобайл</button>
+            <button class="filter-btn" data-cat="ai">ИИ</button>
+            <button class="filter-btn" data-cat="deals">Софт</button>
+        </div>
+        <div class="container">
+            <div class="stats">
+                <div class="stat">
+                    <div class="num">15</div>
+                    <div class="label">Новостей</div>
+                </div>
+                <div class="stat">
+                    <div class="num">4PDA</div>
+                    <div class="label">Источник</div>
+                </div>
+                <div class="stat">
+                    <div class="num">18 ноября 2026</div>
+                    <div class="label">Дата</div>
+                </div>
+            </div>
+            <div class="news-card with-thumb" data-cat="tech">
+                <a class="thumb" href="https://4pda.to/2026/11/18/463448/novaya_versiya_utility_rufus_reshaet_davnyuyu_problemu_v_proshivkakh_uefi/"><img loading="lazy" src="https://4pda.to/s/as6yyasW07qjCCCICHpXPqz1Vz2fz2z2hrNrvugmmEvz1z2uhCMXD1YV8R15MKQR.jpg" alt=""></a>
+                <div class="body">
+                    <div class="meta">
+                        <span class="tag tech">Софт</span>
+                        <span class="author">✍️ <b>Вадим Макаренко</b></span>
+                        <span class="comments"><a href="https://4pda.to/2026/11/18/463448/novaya_versiya_utility_rufus_reshaet_davnyuyu_problemu_v_proshivkakh_uefi/">💬 7</a></span>
+                    </div>
+                    <h2><a href="https://4pda.to/2026/11/18/463448/novaya_versiya_utility_rufus_reshaet_davnyuyu_problemu_v_proshivkakh_uefi/">Новая версия утилиты Rufus решает давнюю проблему в прошивках UEFI</a></h2>
+                    <p>Разработчики популярной утилиты для создания загрузочных USB-накопителей Rufus выпустили новую версию. Обновление 4.16 не только исправляет несколько ошибок самой программы, но и обходит давнюю проблему [...]</p>
+                </div>
+            </div>
+            <div class="news-card with-thumb" data-cat="tech">
+                <a class="thumb" href="https://4pda.to/2026/11/18/463449/ne_sovrali_windows_11_dejstvitelno_stala_rabotat_luchshe_pri_8_gb_ozu/"><img loading="lazy" src="https://4pda.to/s/as6yz2t2Q9GmydkPpz2lmaUdAz2kk5UaJ0NJdMYWfs41flUJXhiYHW2vc4.jpg" alt=""></a>
+                <div class="body">
+                    <div class="meta">
+                        <span class="tag tech">Софт</span>
+                        <span class="author">✍️ <b>Вадим Макаренко</b></span>
+                        <span class="comments"><a href="https://4pda.to/2026/11/18/463449/ne_sovrali_windows_11_dejstvitelno_stala_rabotat_luchshe_pri_8_gb_ozu/">💬 19</a></span>
+                    </div>
+                    <h2><a href="https://4pda.to/2026/11/18/463449/ne_sovrali_windows_11_dejstvitelno_stala_rabotat_luchshe_pri_8_gb_ozu/">Не соврали: Windows 11 действительно стала работать лучше при 8 ГБ ОЗУ</a></h2>
+                    <p>Microsoft обещала, что последнее обновление Windows 11 сделает систему отзывчивее на устройствах с небольшим объёмом оперативной памяти. Первые независимые тесты показывают, что это не просто маркетинговое [...]</p>
+                </div>
+            </div>
+            <div class="news-card with-thumb" data-cat="gaming">
+                <a class="thumb" href="https://4pda.to/2026/11/18/463453/gta_vi_poluchila_99_iz_100_ot_pressy_eto_samaya_vysokootsenyonnaya_igra_v_istorii/"><img loading="lazy" src="https://4pda.to/s/as6yqeseKnP8q0InLimz0EOWCz19VMf2hLsz1DA66bS3VXWRmGz13fz2EtmJyQm3.jpg" alt=""></a>
+                <div class="body">
+                    <div class="meta">
+                        <span class="tag gaming">Игры</span>
+                        <span class="author">✍️ <b>Александр Козьяков</b></span>
+                        <span class="comments"><a href="https://4pda.to/2026/11/18/463453/gta_vi_poluchila_99_iz_100_ot_pressy_eto_samaya_vysokootsenyonnaya_igra_v_istorii/">💬 53</a></span>
+                    </div>
+                    <h2><a href="https://4pda.to/2026/11/18/463453/gta_vi_poluchila_99_iz_100_ot_pressy_eto_samaya_vysokootsenyonnaya_igra_v_istorii/">GTA VI получила 99 из 100 от прессы. Это самая высокооценённая игра в истории</a></h2>
+                    <p>Вот и настал этот момент: GTA VI запускается по всему миру, и журналисты опубликовали рецензии. Как и ожидалось, перед нами абсолютный шедевр. [youtube=rz1B4B2yBZY:640:360:::0] На основании 98 рецензий [...]</p>
+                </div>
+            </div>
+            <div class="news-card with-thumb" data-cat="tech">
+                <a class="thumb" href="https://4pda.to/2026/11/18/463442/v_telegram_poyavyatsya_skrytye_chaty_s_dostupom_po_sekretnoj_fraze/"><img loading="lazy" src="https://4pda.to/s/as6yyqcHbyepfELsWPL4VfMK9z0jRQsFMhcKGKBf.jpg" alt=""></a>
+                <div class="body">
+                    <div class="meta">
+                        <span class="tag tech">Софт</span>
+                        <span class="author">✍️ <b>Вадим Макаренко</b></span>
+                        <span class="comments"><a href="https://4pda.to/2026/11/18/463442/v_telegram_poyavyatsya_skrytye_chaty_s_dostupom_po_sekretnoj_fraze/">💬 44</a></span>
+                    </div>
+                    <h2><a href="https://4pda.to/2026/11/18/463442/v_telegram_poyavyatsya_skrytye_chaty_s_dostupom_po_sekretnoj_fraze/">В Telegram появятся скрытые чаты с доступом по секретной фразе</a></h2>
+                    <p>В бета-версии Telegram для macOS обнаружили «Скрытые чаты», которые призваны спрятать отдельные переписки от посторонних глаз. Для доступа к ним потребуется секретная фраза длиной не менее восьми символов. [caption [...]</p>
+                </div>
+            </div>
+            <div class="news-card with-thumb" data-cat="tech">
+                <a class="thumb" href="https://4pda.to/2026/11/18/463433/acer_vypustila_dva_shirokikh_igrovykh_5k_monitora_nitro_s_chastotoj_obnovleniya_do_360_gts/"><img loading="lazy" src="https://4pda.to/s/as6ywm8BYsjoz0tM37dsxXOGL9z0TggM1orcPEJOz1In3XTz0ZeOz0F0FZmdFWo.jpg" alt=""></a>
+                <div class="body">
+                    <div class="meta">
+                        <span class="tag tech">Софт</span>
+                        <span class="author">✍️ <b>Виктория Анисимова</b></span>
+                        <span class="comments"><a href="https://4pda.to/2026/11/18/463433/acer_vypustila_dva_shirokikh_igrovykh_5k_monitora_nitro_s_chastotoj_obnovleniya_do_360_gts/">💬 5</a></span>
+                    </div>
+                    <h2><a href="https://4pda.to/2026/11/18/463433/acer_vypustila_dva_shirokikh_igrovykh_5k_monitora_nitro_s_chastotoj_obnovleniya_do_360_gts/">Acer выпустила два широких игровых 5K-монитора Nitro с частотой обновления до 360 Гц</a></h2>
+                    <p>Acer расширила игровую линейку Nitro двумя изогнутыми 34-дюймовыми мониторами ED340CKRP и ED340CKRJ. Обе новинки оснащены VA-панелями с радиусом кривизны 1500R и поддерживают технологию Dynamic Frequency [...]</p>
+                </div>
+            </div>
+            <div class="news-card with-thumb" data-cat="mobile">
+                <a class="thumb" href="https://4pda.to/2026/11/18/463446/na_android_poyavilsya_prostoj_sposob_zapuskat_igry_switch_2_bez_emulyatsii/"><img loading="lazy" src="https://4pda.to/s/as6ywymsvgFlz2f9WdLh7vMsanH3G8R2hkFJywWB.jpg" alt=""></a>
+                <div class="body">
+                    <div class="meta">
+                        <span class="tag mobile">Мобайл</span>
+                        <span class="author">✍️ <b>Александр Козьяков</b></span>
+                        <span class="comments"><a href="https://4pda.to/2026/11/18/463446/na_android_poyavilsya_prostoj_sposob_zapuskat_igry_switch_2_bez_emulyatsii/">💬 15</a></span>
+                    </div>
+                    <h2><a href="https://4pda.to/2026/11/18/463446/na_android_poyavilsya_prostoj_sposob_zapuskat_igry_switch_2_bez_emulyatsii/">На Android появился простой способ запускать игры Switch 2 без эмуляции</a></h2>
+                    <p>Распространение эмуляторов и портов, связанное с появлением мощных инструментов вайбкодинга, только началось. Новые возможности появляются почти каждый день: например, теперь можно автоматически создавать [...]</p>
+                </div>
+            </div>
+            <div class="news-card with-thumb" data-cat="tech">
+                <a class="thumb" href="https://4pda.to/2026/11/18/463432/apple_homeview_okazalas_nastoyaschim_koshmarom_po_chasti_remonta_video/"><img loading="lazy" src="https://4pda.to/s/as6yvpC1pLlVmgJYqz0jwWwrtqOcu7RS74z0ZdKqGvJsmsz2c1z2XPdpbz2z2JMb.jpg" alt=""></a>
+                <div class="body">
+                    <div class="meta">
+                        <span class="tag tech">Техника</span>
+                        <span class="author">✍️ <b>Ксения Седна</b></span>
+                        <span class="comments"><a href="https://4pda.to/2026/11/18/463432/apple_homeview_okazalas_nastoyaschim_koshmarom_po_chasti_remonta_video/">💬 7</a></span>
+                    </div>
+                    <h2><a href="https://4pda.to/2026/11/18/463432/apple_homeview_okazalas_nastoyaschim_koshmarom_po_chasti_remonta_video/">Apple HomeView оказалась «настоящим кошмаром» по части ремонта [ВИДЕО]</a></h2>
+                    <p>Казалось бы, в последнее время Apple взяла курс на улучшение ремонтопригодности своих устройств — но, как оказалось, к гибридной умной колонкой HomeView это не относится. Специалисты iFixit провели разборку [...]</p>
+                </div>
+            </div>
+            <div class="news-card with-thumb" data-cat="gaming">
+                <a class="thumb" href="https://4pda.to/2026/11/18/463445/razgrom_sony_vyigrala_sud_na_2_6_milliarda_protiv_britanskikh_gejmerov/"><img loading="lazy" src="https://4pda.to/s/as6yz0peAVLFFl1jwUwZphRhH0gfHBTj3ArQhUQY.jpg" alt=""></a>
+                <div class="body">
+                    <div class="meta">
+                        <span class="tag gaming">Игры</span>
+                        <span class="author">✍️ <b>Александр Козьяков</b></span>
+                        <span class="comments"><a href="https://4pda.to/2026/11/18/463445/razgrom_sony_vyigrala_sud_na_2_6_milliarda_protiv_britanskikh_gejmerov/">💬 40</a></span>
+                    </div>
+                    <h2><a href="https://4pda.to/2026/11/18/463445/razgrom_sony_vyigrala_sud_na_2_6_milliarda_protiv_britanskikh_gejmerov/">Разгром. Sony выиграла суд на $2,6 миллиарда против британских геймеров</a></h2>
+                    <p>В последнее время Sony стала ненавистной геймерам компанией — и многие пытаются достучаться до неё через суд. Получается не всегда. Sony выиграла в Великобритании коллективный иск на $2,6 млрд: поводом [...]</p>
+                </div>
+            </div>
+            <div class="news-card with-thumb" data-cat="tech">
+                <a class="thumb" href="https://4pda.to/2026/11/18/463431/vaio_predstavila_dva_novykh_noutbuka_s_funktsiej_pulsometra/"><img loading="lazy" src="https://4pda.to/s/as6yyCM9z1fgj1RwldqQDyScXJ1xExmQFNnCeB7xCvJv4sIrz2BPJYTle6q902.jpg" alt=""></a>
+                <div class="body">
+                    <div class="meta">
+                        <span class="tag tech">Техника</span>
+                        <span class="author">✍️ <b>Виктория Анисимова</b></span>
+                        <span class="comments"><a href="https://4pda.to/2026/11/18/463431/vaio_predstavila_dva_novykh_noutbuka_s_funktsiej_pulsometra/">💬 8</a></span>
+                    </div>
+                    <h2><a href="https://4pda.to/2026/11/18/463431/vaio_predstavila_dva_novykh_noutbuka_s_funktsiej_pulsometra/">VAIO представила два новых ноутбука с функцией пульсометра</a></h2>
+                    <p>Семейство ноутбуков VAIO пополнилось двумя новыми 16-дюймовыми модулями: F16 и Pro BM. Оба устройства получили процессоры Intel Core Series 3, до 32 ГБ оперативной памяти, поддержку Wi-Fi 7 и необычную [...]</p>
+                </div>
+            </div>
+            <div class="news-card with-thumb" data-cat="tech">
+                <a class="thumb" href="https://4pda.to/2026/11/18/463430/microsoft_vstraivaet_v_windows_11_protivougonnuyu_tekhnologiyu_dlya_blokirovki_pk/"><img loading="lazy" src="https://4pda.to/s/as6yyi6BZn3ek407CGcJ6jHNZxmSQz0B5z1gFFFHXsYiz2pLBwz20F0k7eFAj4n.jpg" alt=""></a>
+                <div class="body">
+                    <div class="meta">
+                        <span class="tag tech">Софт</span>
+                        <span class="author">✍️ <b>Ксения Седна</b></span>
+                        <span class="comments"><a href="https://4pda.to/2026/11/18/463430/microsoft_vstraivaet_v_windows_11_protivougonnuyu_tekhnologiyu_dlya_blokirovki_pk/">💬 12</a></span>
+                    </div>
+                    <h2><a href="https://4pda.to/2026/11/18/463430/microsoft_vstraivaet_v_windows_11_protivougonnuyu_tekhnologiyu_dlya_blokirovki_pk/">Microsoft встраивает в Windows 11 «противоугонную» технологию для блокировки ПК</a></h2>
+                    <p>Microsoft начала тестирование новой функции Remote Lock для Windows 11. Она поможет компаниям защитить потерянные или украденные устройства от утечки ценных данных — при этом все файлы останутся на месте. Remote [...]</p>
+                </div>
+            </div>
+            <div class="news-card with-thumb" data-cat="gaming">
+                <a class="thumb" href="https://4pda.to/2026/11/18/463444/gta_vi_igra_goda_obyavleny_nominanty_na_glavnuyu_igrovuyu_premiyu/"><img loading="lazy" src="https://4pda.to/s/as6yyCM9z1fgj1RwldqQDyScXJb3PtcxSPgs1ChL7hUan7fVz18VSQn134Hmlg.jpg" alt=""></a>
+                <div class="body">
+                    <div class="meta">
+                        <span class="tag gaming">Игры</span>
+                        <span class="author">✍️ <b>Александр Козьяков</b></span>
+                        <span class="comments"><a href="https://4pda.to/2026/11/18/463444/gta_vi_igra_goda_obyavleny_nominanty_na_glavnuyu_igrovuyu_premiyu/">💬 40</a></span>
+                    </div>
+                    <h2><a href="https://4pda.to/2026/11/18/463444/gta_vi_igra_goda_obyavleny_nominanty_na_glavnuyu_igrovuyu_premiyu/">GTA VI — игра года? Объявлены номинанты на главную игровую премию</a></h2>
+                    <p>Церемония наград The Game Awards назвала номинантов 2026 года. В сети организаторы уже столкнулись с критикой. [youtube=_e0oJSfmIFU:640:360:::0] За звание игры года в этом году поборются Grand Theft [...]</p>
+                </div>
+            </div>
+            <div class="news-card with-thumb" data-cat="tech">
+                <a class="thumb" href="https://4pda.to/2026/11/18/463428/razer_pereodela_igrovye_myshi_viper_i_deathadder_v_karbon/"><img loading="lazy" src="https://4pda.to/s/as6yyqsplNW76WwExa4UQxMRUxovZoJP8TRjwWwChRhnmoLN4bXz0f3DlKhP.jpg" alt=""></a>
+                <div class="body">
+                    <div class="meta">
+                        <span class="tag tech">Техника</span>
+                        <span class="author">✍️ <b>Ксения Седна</b></span>
+                        <span class="comments"><a href="https://4pda.to/2026/11/18/463428/razer_pereodela_igrovye_myshi_viper_i_deathadder_v_karbon/">💬 3</a></span>
+                    </div>
+                    <h2><a href="https://4pda.to/2026/11/18/463428/razer_pereodela_igrovye_myshi_viper_i_deathadder_v_karbon/">Razer «переодела» игровые мыши Viper и DeathAdder в карбон</a></h2>
+                    <p>Компания Razer обновила две модели фирменных игровых мышей, изменив материал их корпуса с обычного пластика на карбоновое волокно. Специальные версии Viper и DeathAdder сохранили привычный дизайн и характеристики, [...]</p>
+                </div>
+            </div>
+            <div class="news-card with-thumb" data-cat="mobile">
+                <a class="thumb" href="https://4pda.to/2026/11/18/463408/motorola_signature_27_vozvrat_k_kornyam_glazami_zarubezhnykh_smi/"><img loading="lazy" src="https://4pda.to/s/as6yuewsz19waLiqCHZz1N6y2JEu22b3aCnEiOphrtJoAQ5isPqPpIbZMb2U4e.jpg" alt=""></a>
+                <div class="body">
+                    <div class="meta">
+                        <span class="tag mobile">Мобайл</span>
+                        <span class="author">✍️ <b>4PDA</b></span>
+                        <span class="comments"><a href="https://4pda.to/2026/11/18/463408/motorola_signature_27_vozvrat_k_kornyam_glazami_zarubezhnykh_smi/">💬 97</a></span>
+                    </div>
+                    <h2><a href="https://4pda.to/2026/11/18/463408/motorola_signature_27_vozvrat_k_kornyam_glazami_zarubezhnykh_smi/">Motorola Signature 27: возврат к корням глазами зарубежных СМИ</a></h2>
+                    <p>Уже долгие годы смартфоны Motorola будто находятся на втором плане. Немногие рассматривают их как серьёзных конкурентов, особенно в сегменте флагманов. С моделью Signature 27 бренд решил громко напомнить [...]</p>
+                </div>
+            </div>
+            <div class="news-card with-thumb" data-cat="ai">
+                <a class="thumb" href="https://4pda.to/2026/11/18/463429/openai_zapustila_ii_modeli_gpt_6_2_astra_i_sol_dlya_professionalnoj_i_povsednevnoj_raboty/"><img loading="lazy" src="https://4pda.to/s/as6yyi6BZn3ek407CGcJ6jHNiW8mqMfml1jQk2Fz0GngoMjbFu3z1jXtz2oXQ2.jpg" alt=""></a>
+                <div class="body">
+                    <div class="meta">
+                        <span class="tag ai">ИИ</span>
+                        <span class="author">✍️ <b>Виктория Анисимова</b></span>
+                        <span class="comments"><a href="https://4pda.to/2026/11/18/463429/openai_zapustila_ii_modeli_gpt_6_2_astra_i_sol_dlya_professionalnoj_i_povsednevnoj_raboty/">💬 12</a></span>
+                    </div>
+                    <h2><a href="https://4pda.to/2026/11/18/463429/openai_zapustila_ii_modeli_gpt_6_2_astra_i_sol_dlya_professionalnoj_i_povsednevnoj_raboty/">OpenAI запустила ИИ-модели GPT-6.2 Astra и Sol для профессиональной и повседневной работы</a></h2>
+                    <p>В портфолио OpenAI появились новые ИИ-модели — GPT-6.2 Astra и GPT-6.2 Sol. Первая предназначена для решения сложных профессиональных задач, вторая ориентирована на повседневное использование. Обе новинки [...]</p>
+                </div>
+            </div>
+            <div class="news-card with-thumb" data-cat="tech">
+                <a class="thumb" href="https://4pda.to/2026/11/18/463426/asus_prokachala_igrovoj_noutbuk_tuf_gaming_16_2026_novoj_videokartoj_geforce/"><img loading="lazy" src="https://4pda.to/s/as6yqaz1qYMz0xYRmz2WUz0PG5JoPBqMBsPeJ72og8Us2SdlZykz0bsFMh64umnW.jpg" alt=""></a>
+                <div class="body">
+                    <div class="meta">
+                        <span class="tag tech">Техника</span>
+                        <span class="author">✍️ <b>Виктория Анисимова</b></span>
+                        <span class="comments"><a href="https://4pda.to/2026/11/18/463426/asus_prokachala_igrovoj_noutbuk_tuf_gaming_16_2026_novoj_videokartoj_geforce/">💬 21</a></span>
+                    </div>
+                    <h2><a href="https://4pda.to/2026/11/18/463426/asus_prokachala_igrovoj_noutbuk_tuf_gaming_16_2026_novoj_videokartoj_geforce/">ASUS «прокачала» игровой ноутбук TUF Gaming 16 (2026) новой видеокартой GeForce</a></h2>
+                    <p>Компания ASUS выпустила новую версию лэптопа TUF Gaming 16 (2026). Её козырем стала производительная видеокарта NVIDIA GeForce RTX 5070 в сочетании с быстрым дисплеем и возможностью увеличения объёма оперативной [...]</p>
+                </div>
+            </div>
+        </div>
+    </section>
+<section id="section-kommersant" class="source-section" style="display:none;">
+        <div class="filter-bar">
+            <button class="filter-btn active" data-cat="all">Все</button>
+            <button class="filter-btn" data-cat="tech">Техника</button>
+            <button class="filter-btn" data-cat="gaming">Игры</button>
+            <button class="filter-btn" data-cat="mobile">Мобайл</button>
+            <button class="filter-btn" data-cat="ai">ИИ</button>
+            <button class="filter-btn" data-cat="deals">Софт</button>
+        </div>
+        <div class="container">
+            <div class="stats">
+                <div class="stat">
+                    <div class="num">15</div>
+                    <div class="label">Новостей</div>
+                </div>
+                <div class="stat">
+                    <div class="num">Коммерсантъ</div>
+                    <div class="label">Источник</div>
+                </div>
+                <div class="stat">
+                    <div class="num">18 ноября 2026</div>
+                    <div class="label">Дата</div>
+                </div>
+            </div>
+            <div class="news-card with-thumb" data-cat="tech">
+                <a class="thumb" href="https://www.kommersant.ru/doc/9112668"><img loading="lazy" src="https://iv.kommersant.ru/SocialPics/9112668_49_0_1847172719" alt=""></a>
+                <div class="body">
+                    <div class="meta">
+                        <span class="tag tech">Происшествия</span>
+                        <span class="author">✍️ <b>Происшествия</b></span>
+                        
+                    </div>
+                    <h2><a href="https://www.kommersant.ru/doc/9112668">Замглавы госпиталя в Подольске обвиняют в мошенничестве при закупках материалов</a></h2>
+                    <p>Как стало известно “Ъ”, 2-й Западный окружной военный суд в Москве отказался смягчить меру пресечения заместителю начальника военного клинического госпиталя Минобороны в Подольске по медицинскому снабжению Игорю Ситников…</p>
+                </div>
+            </div>
+            <div class="news-card with-thumb" data-cat="tech">
+                <a class="thumb" href="https://www.kommersant.ru/doc/9112734"><img loading="lazy" src="https://iv.kommersant.ru/SocialPics/9112734_49_0_213792664" alt=""></a>
+                <div class="body">
+                    <div class="meta">
+                        <span class="tag tech">Жизнь</span>
+                        <span class="author">✍️ <b>Жизнь</b></span>
+                        
+                    </div>
+                    <h2><a href="https://www.kommersant.ru/doc/9112734">Лерчек направилась в Китай на лечение</a></h2>
+                    <p>Блогер Валерия Чекалина (Лерчек) направилась в Китай на лечение после того, как Федеральная служба исполнения наказаний вернула ей загранпаспорт. Об этом сообщил ТАСС источник, знакомый с ситуацией.</p>
+                </div>
+            </div>
+            <div class="news-card with-thumb" data-cat="tech">
+                <a class="thumb" href="https://www.kommersant.ru/doc/9112715"><img loading="lazy" src="https://iv.kommersant.ru/SocialPics/9112715_49_0_1340829178" alt=""></a>
+                <div class="body">
+                    <div class="meta">
+                        <span class="tag tech">Индустрии</span>
+                        <span class="author">✍️ <b>Индустрии</b></span>
+                        
+                    </div>
+                    <h2><a href="https://www.kommersant.ru/doc/9112715">Минфин США разрешил сербской NIS продажу дочерних структур в Болгарии и Румынии</a></h2>
+                    <p>Управление по контролю за иностранными активами (OFAC) Министерства финансов США выдало лицензию, которая разрешает проводить сделки по продаже дочерних структур Сербской нефтяной компании (NIS, российская доля в ней сос…</p>
+                </div>
+            </div>
+            <div class="news-card with-thumb" data-cat="tech">
+                <a class="thumb" href="https://www.kommersant.ru/doc/9112707"><img loading="lazy" src="https://iv.kommersant.ru/SocialPics/9112707_49_0_440424551" alt=""></a>
+                <div class="body">
+                    <div class="meta">
+                        <span class="tag tech">Медиа и Телеком</span>
+                        <span class="author">✍️ <b>Медиа и Телеком</b></span>
+                        
+                    </div>
+                    <h2><a href="https://www.kommersant.ru/doc/9112707">GTA VI стала одной из двух самых высокооцененных игр в истории</a></h2>
+                    <p>Видеоигра Grand Theft Auto VI от студии Rockstar получила рекордно высокие оценки критиков. Средний балл новой части GTA на Metacritic составил 99 из 100 на основе 146 обзоров критиков.</p>
+                </div>
+            </div>
+            <div class="news-card with-thumb" data-cat="tech">
+                <a class="thumb" href="https://www.kommersant.ru/doc/9112720"><img loading="lazy" src="https://iv.kommersant.ru/SocialPics/9112720_49_0_209150874" alt=""></a>
+                <div class="body">
+                    <div class="meta">
+                        <span class="tag tech">Новости</span>
+                        <span class="author">✍️ <b>Новости</b></span>
+                        
+                    </div>
+                    <h2><a href="https://www.kommersant.ru/doc/9112720">Минтранс организует дополнительные поезда в Крыму</a></h2>
+                    <p>Министерство транспорта России принимает меры для обеспечения стабильного и безопасного транспортного сообщения с Крымом после атак беспилотников на Крымский мост 16 и 17 ноября. Совещание оперативного штаба по ситуации …</p>
+                </div>
+            </div>
+            <div class="news-card with-thumb" data-cat="tech">
+                <a class="thumb" href="https://www.kommersant.ru/doc/9112719"><img loading="lazy" src="https://iv.kommersant.ru/SocialPics/9112719_49_0_849265657" alt=""></a>
+                <div class="body">
+                    <div class="meta">
+                        <span class="tag tech">Мир</span>
+                        <span class="author">✍️ <b>Мир</b></span>
+                        
+                    </div>
+                    <h2><a href="https://www.kommersant.ru/doc/9112719">Саудовская Аравия сообщила об ударах по 60 объектам хуситов в Йемене</a></h2>
+                    <p>Саудовская Аравия заявила об ударах по 60 военным объектам хуситов в Йемене. Удары были нанесены 17 ноября по провинциям Сана, Ходейда, Амран и Саада, передает Al Jazeera.</p>
+                </div>
+            </div>
+            <div class="news-card with-thumb" data-cat="tech">
+                <a class="thumb" href="https://www.kommersant.ru/doc/9112703"><img loading="lazy" src="https://iv.kommersant.ru/SocialPics/9112703_49_0_1482481363" alt=""></a>
+                <div class="body">
+                    <div class="meta">
+                        <span class="tag tech">Индустрии</span>
+                        <span class="author">✍️ <b>Индустрии</b></span>
+                        
+                    </div>
+                    <h2><a href="https://www.kommersant.ru/doc/9112703">Россельхозбанк увеличил чистую прибыль на 25%</a></h2>
+                    <p>Чистая прибыль Россельхозбанка (РСХБ) за девять месяцев 2026 года выросла на 25%, почти до 60 млрд руб., следует из его отчетности по МСФО. Рентабельность собственного капитала увеличилась с 18,7% до 19,4%.</p>
+                </div>
+            </div>
+            <div class="news-card with-thumb" data-cat="tech">
+                <a class="thumb" href="https://www.kommersant.ru/doc/9112713"><img loading="lazy" src="https://iv.kommersant.ru/SocialPics/9112713_49_0_1938214139" alt=""></a>
+                <div class="body">
+                    <div class="meta">
+                        <span class="tag tech">Мир</span>
+                        <span class="author">✍️ <b>Мир</b></span>
+                        
+                    </div>
+                    <h2><a href="https://www.kommersant.ru/doc/9112713">Politico: власти Израиля с июня не поддерживают контакты с Каллас</a></h2>
+                    <p>В июне 2026 года Израиль прекратил прямые контакты с главой евродипломатии Кайей Каллас из-за ее критики действий страны в Палестине. МИД Израиля подтвердил, что разрыв касается исключительно госпожи Каллас и не распрост…</p>
+                </div>
+            </div>
+            <div class="news-card with-thumb" data-cat="tech">
+                <a class="thumb" href="https://www.kommersant.ru/doc/9112710"><img loading="lazy" src="https://iv.kommersant.ru/SocialPics/9112710_49_0_1624932267" alt=""></a>
+                <div class="body">
+                    <div class="meta">
+                        <span class="tag tech">Мир</span>
+                        <span class="author">✍️ <b>Мир</b></span>
+                        
+                    </div>
+                    <h2><a href="https://www.kommersant.ru/doc/9112710">ЕС предложит запретить въезд участником СВО в 22-м пакете санкций</a></h2>
+                    <p>В 22-м пакете санкций против России чиновники ЕС планируют прописать запрет на въезд для участников СВО, добавить в список еще несколько российских банков и криптопровайдеров, а также 65 нефтяных танкеров. Об этом сообща…</p>
+                </div>
+            </div>
+            <div class="news-card with-thumb" data-cat="tech">
+                <a class="thumb" href="https://www.kommersant.ru/doc/9112678"><img loading="lazy" src="https://iv.kommersant.ru/SocialPics/9112678_49_0_935404560" alt=""></a>
+                <div class="body">
+                    <div class="meta">
+                        <span class="tag tech">Мир</span>
+                        <span class="author">✍️ <b>Мир</b></span>
+                        
+                    </div>
+                    <h2><a href="https://www.kommersant.ru/doc/9112678">Дмитриев и Рубио встретились на саммите АТЭС</a></h2>
+                    <p>Госсекретарь США Марко Рубио и спецпредставитель президента России по инвестиционно-экономическому сотрудничеству с зарубежными странами Кирилл Дмитриев поговорили перед началом торжественного приема на саммите Азиатско-…</p>
+                </div>
+            </div>
+            <div class="news-card with-thumb" data-cat="tech">
+                <a class="thumb" href="https://www.kommersant.ru/doc/9112669"><img loading="lazy" src="https://iv.kommersant.ru/SocialPics/9112669_49_0_1651687438" alt=""></a>
+                <div class="body">
+                    <div class="meta">
+                        <span class="tag tech">Происшествия</span>
+                        <span class="author">✍️ <b>Происшествия</b></span>
+                        
+                    </div>
+                    <h2><a href="https://www.kommersant.ru/doc/9112669">Число пострадавших при ударе БПЛА по Северскому району Кубани выросло до девяти // При атаке БПЛА на Кубань поврежден газопровод</a></h2>
+                    <p>Число пострадавших при ударе беспилотников вооруженных сил Украины по Северскому району Кубани увеличилось до девяти. Из них одного человека госпитализировали.</p>
+                </div>
+            </div>
+            <div class="news-card with-thumb" data-cat="tech">
+                <a class="thumb" href="https://www.kommersant.ru/doc/9112662"><img loading="lazy" src="https://iv.kommersant.ru/SocialPics/9112662_49_0_1704343930" alt=""></a>
+                <div class="body">
+                    <div class="meta">
+                        <span class="tag tech">Мир</span>
+                        <span class="author">✍️ <b>Мир</b></span>
+                        
+                    </div>
+                    <h2><a href="https://www.kommersant.ru/doc/9112662">Путин рассказал Си Цзиньпину о ситуации в зоне боевых действий на Украине</a></h2>
+                    <p>Президент России Владимир Путин рассказал председателю КНР Си Цзиньпину о ситуации в зоне боевых действий на Украине. Информацию об этом подтвердил журналистам пресс-секретарь президента РФ Дмитрий Песков.</p>
+                </div>
+            </div>
+            <div class="news-card with-thumb" data-cat="tech">
+                <a class="thumb" href="https://www.kommersant.ru/doc/9112651"><img loading="lazy" src="https://iv.kommersant.ru/SocialPics/9112651_49_0_1218155111" alt=""></a>
+                <div class="body">
+                    <div class="meta">
+                        <span class="tag tech">Власть</span>
+                        <span class="author">✍️ <b>Власть</b></span>
+                        
+                    </div>
+                    <h2><a href="https://www.kommersant.ru/doc/9112651">Глава московского департамента внешнеэкономических связей ушел в отставку</a></h2>
+                    <p>Руководитель департамента внешнеэкономических и международных связей правительства Москвы Сергей Черемин освобожден от должности. Указ за подписью мэра Сергея Собянина опубликован на сайте администрации города.</p>
+                </div>
+            </div>
+            <div class="news-card with-thumb" data-cat="tech">
+                <a class="thumb" href="https://www.kommersant.ru/doc/9112655"><img loading="lazy" src="https://iv.kommersant.ru/SocialPics/9112655_49_0_284278214" alt=""></a>
+                <div class="body">
+                    <div class="meta">
+                        <span class="tag tech">Индустрии</span>
+                        <span class="author">✍️ <b>Индустрии</b></span>
+                        
+                    </div>
+                    <h2><a href="https://www.kommersant.ru/doc/9112655">ЦБ включил Альфа-банк в реестр криптообменников</a></h2>
+                    <p>Банк России решил внести Альфа-банк в реестр организаций по обмену цифровых валют, сообщила пресс-служба регулятора. Банк стал 31-м участником госреестра наравне со Сбербанком, ВТБ и структурой «Т-Технологий».</p>
+                </div>
+            </div>
+            <div class="news-card with-thumb" data-cat="tech">
+                <a class="thumb" href="https://www.kommersant.ru/doc/9112646"><img loading="lazy" src="https://iv.kommersant.ru/SocialPics/9112646_49_3254190_649946246" alt=""></a>
+                <div class="body">
+                    <div class="meta">
+                        <span class="tag tech">Индустрии</span>
+                        <span class="author">✍️ <b>Индустрии</b></span>
+                        
+                    </div>
+                    <h2><a href="https://www.kommersant.ru/doc/9112646">Госдума увеличила лимит страхования по долгосрочным вкладам до 2 млн рублей</a></h2>
+                    <p>Госдума приняла во втором и третьем чтениях закон об увеличении лимита страхового возмещения по двум видам вкладов. Максимальная сумма страховой выплаты повышена с 1,4 млн до 2 млн руб. по долгосрочным рублевым вкладам ф…</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="footer">
+        <p>Автоматический дайджест от <a href="https://aqvon.ru">AQVON</a> • Powered by <strong>Яной</strong> 💕</p>
+        <p style="margin-top: 8px;">Источники: 4PDA, Коммерсантъ • Данные актуальны на момент публикации</p>
+    </div>
+    <script>
+    (function(){
+      var c=document.getElementById('particles');if(!c)return;
+      var ctx=c.getContext('2d'),W,H,particles=[],N=40,raf;
+      function resize(){W=c.width=innerWidth;H=c.height=innerHeight;}
+      resize();addEventListener('resize',resize);
+      for(var i=0;i<N;i++)particles.push({
+        x:Math.random()*2000,y:Math.random()*2000,
+        r:Math.random()*4+2,
+        vx:(Math.random()-.5)*.4,vy:(Math.random()-.5)*.4,
+        o:Math.random()*.4+.3
+      });
+      function draw(){
+        ctx.clearRect(0,0,W,H);
+        var col=getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
+        ctx.shadowBlur=20;ctx.shadowColor=col;ctx.fillStyle=col;
+        for(var i=0;i<N;i++){
+          var p=particles[i];p.x+=p.vx;p.y+=p.vy;
+          if(p.x<-20)p.x=W+20;if(p.x>W+20)p.x=-20;
+          if(p.y<-20)p.y=H+20;if(p.y>H+20)p.y=-20;
+          ctx.globalAlpha=p.o;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,6.283);ctx.fill();
+        }
+        ctx.shadowBlur=0;ctx.globalAlpha=1;
+        raf=requestAnimationFrame(draw);
+      }
+      if(!matchMedia('(prefers-reduced-motion: reduce)').matches)draw();
+    })();
+    </script>
+</body>
+</html>

@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Дайджест #53 — Nora News</title>
+<meta name="description" content="Ежедневный дайджест новостей #53">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════
+   DESIGN TOKENS
+   ═══════════════════════════════════════ */
+:root {
+  --bg: #0B0B12;
+  --bg-gradient: radial-gradient(ellipse at 20% 0%, rgba(139,92,246,0.06) 0%, transparent 50%),
+                 radial-gradient(ellipse at 80% 100%, rgba(139,92,246,0.03) 0%, transparent 50%);
+  --glass: rgba(255,255,255,0.04);
+  --glass-hover: rgba(255,255,255,0.07);
+  --glass-border: rgba(255,255,255,0.08);
+  --glass-border-hover: rgba(139,92,246,0.4);
+  --accent: #A78BFA;
+  --accent-dim: rgba(139,92,246,0.15);
+  --text: #F4F4F8;
+  --text-secondary: #9CA3AF;
+  --text-muted: #6B7280;
+  --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+  --blur: blur(16px);
+  --radius: 14px;
+  --radius-sm: 10px;
+  --max-w: 1200px;
+}
+
+/* ═══════════════════════════════════════
+   RESET & BASE
+   ═══════════════════════════════════════ */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  background-image: var(--bg-gradient);
+  background-attachment: fixed;
+  color: var(--text);
+  min-height: 100vh;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+a { color: inherit; text-decoration: none; }
+img { display: block; max-width: 100%; height: auto; }
+
+/* ═══════════════════════════════════════
+   TICKER BAR
+   ═══════════════════════════════════════ */
+.ticker-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 24px;
+  background: var(--glass);
+  backdrop-filter: var(--blur);
+  border-bottom: 1px solid var(--glass-border);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  overflow: hidden;
+  position: relative;
+  z-index: 100;
+}
+.ticker-label {
+  color: var(--accent);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.ticker-date {
+  color: var(--text-muted);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.ticker-scroll {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+.ticker-track {
+  display: flex;
+  gap: 40px;
+  animation: ticker 40s linear infinite;
+  white-space: nowrap;
+}
+.ticker-item { color: var(--text-secondary); }
+.ticker-item::before { content: '·'; color: var(--accent); margin-right: 8px; }
+@keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+/* ═══════════════════════════════════════
+   HEADER (STICKY, BLUR)
+   ═══════════════════════════════════════ */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 90;
+  background: rgba(11,11,18,0.75);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--glass-border);
+}
+.header-inner {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 60px;
+}
+.logo {
+  font-family: var(--font-body);
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  white-space: nowrap;
+}
+.logo span { color: var(--accent); }
+.nav-links {
+  display: flex;
+  gap: 0;
+  list-style: none;
+}
+.nav-links a {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  padding: 8px 14px;
+  border-radius: var(--radius-sm);
+  transition: all 0.2s;
+}
+.nav-links a:hover { color: var(--text); background: var(--glass); }
+.header-actions { display: flex; align-items: center; gap: 12px; }
+.search-btn {
+  width: 36px; height: 36px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 16px;
+}
+.search-btn:hover { border-color: var(--glass-border-hover); color: var(--accent); }
+.burger { display: none; background: none; border: none; color: var(--text); font-size: 22px; cursor: pointer; }
+
+/* ═══════════════════════════════════════
+   GLASS CARD
+   ═══════════════════════════════════════ */
+.glass {
+  background: var(--glass);
+  backdrop-filter: var(--blur);
+  -webkit-backdrop-filter: var(--blur);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  transition: all 0.25s ease;
+}
+.glass:hover {
+  background: var(--glass-hover);
+  border-color: var(--glass-border-hover);
+  box-shadow: 0 0 20px rgba(139,92,246,0.08);
+}
+
+/* ═══════════════════════════════════════
+   CONTAINER
+   ═══════════════════════════════════════ */
+.container { max-width: var(--max-w); margin: 0 auto; padding: 0 24px; }
+
+/* ═══════════════════════════════════════
+   HERO: 3 COLUMNS
+   ═══════════════════════════════════════ */
+.hero {
+  display: grid;
+  grid-template-columns: 1fr 1.6fr 1fr;
+  gap: 20px;
+  padding: 32px 0;
+}
+
+/* Left column: important news list */
+.hero-left { display: flex; flex-direction: column; gap: 16px; }
+.hero-left .section-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--glass-border);
+}
+
+/* Center: main story */
+.hero-center .glass { overflow: hidden; }
+.hero-center .hero-img {
+  width: 100%;
+  aspect-ratio: 16/9;
+  object-fit: cover;
+  border-radius: var(--radius) var(--radius) 0 0;
+}
+.hero-center .hero-body { padding: 24px; }
+.hero-center .hero-category {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 10px;
+}
+.hero-center .hero-title {
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.25;
+  margin-bottom: 12px;
+}
+.hero-center .hero-desc {
+  font-size: 15px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+.hero-center .hero-meta {
+  display: flex;
+  gap: 16px;
+  margin-top: 16px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+/* Right column: opinions */
+.hero-right { display: flex; flex-direction: column; gap: 16px; }
+.hero-right .section-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--glass-border);
+}
+
+/* ═══════════════════════════════════════
+   ARTICLE CARDS (INLINE)
+   ═══════════════════════════════════════ */
+.article-inline {
+  display: block;
+  padding: 14px;
+}
+.article-inline .ai-cat {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+}
+.article-inline .ai-title {
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.4;
+  margin-bottom: 6px;
+}
+.article-inline .ai-desc {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.article-inline .ai-meta {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-muted);
+  margin-top: 8px;
+}
+
+/* Opinion card */
+.opinion-card {
+  display: block;
+  padding: 16px;
+  border-left: 3px solid var(--accent);
+}
+.opinion-card .oc-author {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--accent);
+  margin-bottom: 6px;
+}
+.opinion-card .oc-title {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+  font-style: italic;
+}
+
+/* ═══════════════════════════════════════
+   SECTION HEADER
+   ═══════════════════════════════════════ */
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 24px 0 16px;
+  border-bottom: 1px solid var(--glass-border);
+  margin-bottom: 20px;
+}
+.section-header h2 {
+  font-family: var(--font-body);
+  font-size: 20px;
+  font-weight: 700;
+}
+.section-header .sh-count {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-left: auto;
+}
+
+/* ═══════════════════════════════════════
+   CATEGORY SECTION: 3-4 CARDS
+   ═══════════════════════════════════════ */
+.category-section { padding-bottom: 32px; }
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+.card-grid .glass { padding: 0; overflow: hidden; display: flex; flex-direction: column; }
+.card-img {
+  width: 100%;
+  aspect-ratio: 16/10;
+  object-fit: cover;
+}
+.card-body { padding: 16px; flex: 1; display: flex; flex-direction: column; }
+.card-cat {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+.card-title {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.35;
+  margin-bottom: 8px;
+  flex: 1;
+}
+.card-desc {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.card-meta {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-muted);
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--glass-border);
+  display: flex;
+  justify-content: space-between;
+}
+
+/* ═══════════════════════════════════════
+   MOST READ
+   ═══════════════════════════════════════ */
+.most-read { padding: 32px 0; }
+.most-read-list { display: flex; flex-direction: column; gap: 2px; }
+.mr-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 16px;
+}
+.mr-num {
+  font-family: var(--font-mono);
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--accent);
+  line-height: 1;
+  min-width: 40px;
+  opacity: 0.6;
+}
+.mr-content { flex: 1; }
+.mr-title { font-size: 15px; font-weight: 600; line-height: 1.4; margin-bottom: 4px; }
+.mr-meta {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-muted);
+}
+
+/* ═══════════════════════════════════════
+   MULTIMEDIA
+   ═══════════════════════════════════════ */
+.multimedia { padding-bottom: 40px; }
+.mm-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.mm-card .glass { overflow: hidden; }
+.mm-card img { width: 100%; aspect-ratio: 16/9; object-fit: cover; }
+.mm-card .mm-body { padding: 20px; }
+.mm-card .mm-cat {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+.mm-card .mm-title { font-size: 18px; font-weight: 600; line-height: 1.35; }
+.mm-card .mm-desc {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin-top: 8px;
+}
+
+/* ═══════════════════════════════════════
+   FOOTER
+   ═══════════════════════════════════════ */
+.site-footer {
+  margin-top: 40px;
+  padding: 48px 0 24px;
+  border-top: 1px solid var(--glass-border);
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 40px;
+  margin-bottom: 40px;
+}
+.footer-brand .fb-name {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+.footer-brand .fb-name span { color: var(--accent); }
+.footer-brand .fb-desc {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.6;
+  max-width: 280px;
+}
+.footer-col h4 {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 16px;
+}
+.footer-col ul { list-style: none; }
+.footer-col li { margin-bottom: 10px; }
+.footer-col a {
+  font-size: 13px;
+  color: var(--text-secondary);
+  transition: color 0.2s;
+}
+.footer-col a:hover { color: var(--accent); }
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 24px;
+  border-top: 1px solid var(--glass-border);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+/* ═══════════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════════ */
+@media (max-width: 1024px) {
+  .hero { grid-template-columns: 1fr 1fr; }
+  .hero-right { display: none; }
+  .card-grid { grid-template-columns: repeat(2, 1fr); }
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 768px) {
+  .hero { grid-template-columns: 1fr; }
+  .hero-center .hero-title { font-size: 22px; }
+  .card-grid { grid-template-columns: 1fr; }
+  .mm-grid { grid-template-columns: 1fr; }
+  .nav-links { display: none; }
+  .burger { display: block; }
+  .header-inner { height: 52px; }
+  .logo { font-size: 18px; }
+  .footer-grid { grid-template-columns: 1fr; gap: 28px; }
+  .footer-bottom { flex-direction: column; gap: 8px; text-align: center; }
+  .ticker-bar { font-size: 11px; padding: 6px 16px; }
+}
+
+/* ═══════════════════════════════════════
+   ANIMATIONS
+   ═══════════════════════════════════════ */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.hero, .category-section, .most-read, .multimedia {
+  animation: fadeUp 0.5s ease-out both;
+}
+.category-section:nth-child(2) { animation-delay: 0.05s; }
+.category-section:nth-child(3) { animation-delay: 0.10s; }
+.category-section:nth-child(4) { animation-delay: 0.15s; }
+</style>
+</head>
+<body>
+
+<!-- ═══ TICKER BAR ═══ -->
+<div class="ticker-bar" aria-label="Срочные новости">
+  <span class="ticker-label">⚡ Срочно</span>
+  <span class="ticker-date">28.07.2026</span>
+  <div class="ticker-scroll">
+    <div class="ticker-track" id="ticker-track">
+      <span class="ticker-item">Стратегию Трампа против Ирана раскрыли</span>
+      <span class="ticker-item">Приставы взялись за Долину из-за обнаруженного долга</span>
+      <span class="ticker-item">Тегеран связался с Москвой на фоне атак ВСУ на иранское судно. Исламская Республика дала России обещание по Ормузскому проливу</span>
+      <span class="ticker-item">В Москве раскрыли признание эстонских властей</span>
+      <span class="ticker-item">Российскую секс-блогершу задержали за распространение порно</span>
+      <span class="ticker-item">Ученые связали сильную потерю жира с развитием диабета</span>
+      <span class="ticker-item">Стратегию Трампа против Ирана раскрыли</span>
+      <span class="ticker-item">Приставы взялись за Долину из-за обнаруженного долга</span>
+      <span class="ticker-item">Тегеран связался с Москвой на фоне атак ВСУ на иранское судно. Исламская Республика дала России обещание по Ормузскому проливу</span>
+      <span class="ticker-item">В Москве раскрыли признание эстонских властей</span>
+      <span class="ticker-item">Российскую секс-блогершу задержали за распространение порно</span>
+      <span class="ticker-item">Ученые связали сильную потерю жира с развитием диабета</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ HEADER ═══ -->
+<header class="site-header" role="banner">
+  <div class="header-inner">
+    <button class="burger" aria-label="Меню">☰</button>
+    <a href="/" class="logo">Nora <span>News</span></a>
+    <nav aria-label="Рубрики">
+      <ul class="nav-links" role="menubar">
+        <li><a href="#world" role="menuitem">Мир</a></li>
+        <li><a href="#russia" role="menuitem">Россия</a></li>
+        <li><a href="#tech" role="menuitem">Технологии</a></li>
+        <li><a href="#culture" role="menuitem">Культура</a></li>
+        <li><a href="#sport" role="menuitem">Спорт</a></li>
+      </ul>
+    </nav>
+    <div class="header-actions">
+      <button class="search-btn" aria-label="Поиск">🔍</button>
+    </div>
+  </div>
+</header>
+
+<!-- ═══ HERO: 3 COLUMNS ═══ -->
+<main>
+<div class="container">
+  <section class="hero" aria-label="Главные новости">
+
+    <!-- LEFT: top stories list -->
+    <div class="hero-left">
+      <div class="section-label">Важное</div>
+      
+      <a href="https://lenta.ru/news/2026/07/28/strategiyu-trampa-protiv-irana-raskryli/" target="_blank" rel="noopener" class="glass article-inline">
+        <div class="ai-cat">Мир</div>
+        <div class="ai-title">Стратегию Трампа против Ирана раскрыли</div>
+        <div class="ai-meta">lenta.ru</div>
+      </a>
+      <a href="https://lenta.ru/news/2026/07/28/pristavy-vzyalis-za-dolinu-iz-za-obnaruzhennogo-dolga/" target="_blank" rel="noopener" class="glass article-inline">
+        <div class="ai-cat">Мир</div>
+        <div class="ai-title">Приставы взялись за Долину из-за обнаруженного долга</div>
+        <div class="ai-meta">lenta.ru</div>
+      </a>
+      <a href="https://lenta.ru/news/2026/07/28/long-tegeran-svyazalsya-s-moskvoy-na-fone-atak-vsu-na-iranskoe-sudno-islamskaya-respublika-dal-rossii-obeschanie-po-ormuzskomu-prolivu/" target="_blank" rel="noopener" class="glass article-inline">
+        <div class="ai-cat">Россия</div>
+        <div class="ai-title">Тегеран связался с Москвой на фоне атак ВСУ на иранское судно. Исламская Республика дала России обещание по Ормузскому проливу</div>
+        <div class="ai-meta">lenta.ru</div>
+      </a>
+      <a href="https://lenta.ru/news/2026/07/28/v-moskve-raskryli-priznanie-estonskih-vlastey/" target="_blank" rel="noopener" class="glass article-inline">
+        <div class="ai-cat">Россия</div>
+        <div class="ai-title">В Москве раскрыли признание эстонских властей</div>
+        <div class="ai-meta">lenta.ru</div>
+      </a>
+      <a href="https://lenta.ru/news/2026/07/28/rossiyskuyu-seks-blogershu-zaderzhali-za-rasprostranenie-porno/" target="_blank" rel="noopener" class="glass article-inline">
+        <div class="ai-cat">Технологии</div>
+        <div class="ai-title">Российскую секс-блогершу задержали за распространение порно</div>
+        <div class="ai-meta">lenta.ru</div>
+      </a>
+    </div>
+
+    <!-- CENTER: featured story -->
+    <div class="hero-center">
+      
+      <a href="https://lenta.ru/news/2026/07/28/strategiyu-trampa-protiv-irana-raskryli/" target="_blank" rel="noopener" class="glass">
+        <img class="hero-img" src="https://icdn.lenta.ru/images/2026/07/28/08/20260728085541038/pic_033de4d5004c1a01b68a610ebd6a70bc.jpg" alt="Стратегию Трампа против Ирана раскрыли" loading="lazy">
+        <div class="hero-body">
+          <div class="hero-category">Мир</div>
+          <div class="hero-title">Стратегию Трампа против Ирана раскрыли</div>
+          
+          <div class="hero-meta">
+            <span>lenta.ru</span>
+            <span>Дайджест #53</span>
+          </div>
+        </div>
+      </a>
+    </div>
+
+    <!-- RIGHT: opinions -->
+    <div class="hero-right">
+      <div class="section-label">Мнения</div>
+      
+      <a href="https://lenta.ru/news/2026/07/28/strategiyu-trampa-protiv-irana-raskryli/" target="_blank" rel="noopener" class="glass opinion-card">
+        <div class="oc-author">Аналитик</div>
+        <div class="oc-title">Стратегию Трампа против Ирана раскрыли</div>
+      </a>
+      <a href="https://lenta.ru/news/2026/07/28/long-tegeran-svyazalsya-s-moskvoy-na-fone-atak-vsu-na-iranskoe-sudno-islamskaya-respublika-dal-rossii-obeschanie-po-ormuzskomu-prolivu/" target="_blank" rel="noopener" class="glass opinion-card">
+        <div class="oc-author">Обозреватель</div>
+        <div class="oc-title">Тегеран связался с Москвой на фоне атак ВСУ на иранское судно. Исламская Республика дала России обещание по Ормузскому проливу</div>
+      </a>
+      <a href="https://lenta.ru/news/2026/07/28/rossiyskuyu-seks-blogershu-zaderzhali-za-rasprostranenie-porno/" target="_blank" rel="noopener" class="glass opinion-card">
+        <div class="oc-author">Корреспондент</div>
+        <div class="oc-title">Российскую секс-блогершу задержали за распространение порно</div>
+      </a>
+    </div>
+
+  </section>
+</div>
+
+<!-- ═══ CATEGORY SECTIONS ═══ -->
+<div class="container">
+
+  <section class="category-section" id="world" aria-label="Мир">
+    <div class="section-header">
+      <span>🌍</span>
+      <h2>Мир</h2>
+      <span class="sh-count">15 новостей</span>
+    </div>
+    <div class="card-grid">
+        <a href="https://lenta.ru/news/2026/07/28/strategiyu-trampa-protiv-irana-raskryli/" target="_blank" rel="noopener" class="glass">
+          <img class="card-img" src="https://icdn.lenta.ru/images/2026/07/28/08/20260728085541038/pic_033de4d5004c1a01b68a610ebd6a70bc.jpg" alt="Стратегию Трампа против Ирана раскрыли" loading="lazy">
+          <div class="card-body">
+            <div class="card-cat">lenta.ru</div>
+            <div class="card-title">Стратегию Трампа против Ирана раскрыли</div>
+            
+          </div>
+        </a>
+        <a href="https://lenta.ru/news/2026/07/28/pristavy-vzyalis-za-dolinu-iz-za-obnaruzhennogo-dolga/" target="_blank" rel="noopener" class="glass">
+          <img class="card-img" src="https://icdn.lenta.ru/images/2026/07/28/08/20260728085213113/pic_861a147a00645cbb9de1f90291a63986.jpg" alt="Приставы взялись за Долину из-за обнаруженного долга" loading="lazy">
+          <div class="card-body">
+            <div class="card-cat">lenta.ru</div>
+            <div class="card-title">Приставы взялись за Долину из-за обнаруженного долга</div>
+            
+          </div>
+        </a>
+        <a href="https://lenta.ru/news/2026/07/28/stalo-izvestno-o-serieznom-udare-po-ukrainskim-pozitsiyam-s-bpla/" target="_blank" rel="noopener" class="glass">
+          <img class="card-img" src="https://icdn.lenta.ru/images/2026/07/28/08/20260728085327777/pic_dbe890854a2b1a0ecbc287c072daa1d3.jpg" alt="Стало известно о серьезном ударе по украинским позициям с БПЛА" loading="lazy">
+          <div class="card-body">
+            <div class="card-cat">lenta.ru</div>
+            <div class="card-title">Стало известно о серьезном ударе по украинским позициям с БПЛА</div>
+            
+          </div>
+        </a>
+        <a href="https://lenta.ru/news/2026/07/28/velikobritaniya-poobeschala-napravit-svoi-voyska-na-ukrainu-pri-odnom-uslovii/" target="_blank" rel="noopener" class="glass">
+          <img class="card-img" src="https://icdn.lenta.ru/images/2026/07/28/08/20260728084123964/pic_5e8eafac58f09330c246fea1b486d7ae.jpg" alt="Великобритания пообещала направить свои войска на Украину при одном условии" loading="lazy">
+          <div class="card-body">
+            <div class="card-cat">lenta.ru</div>
+            <div class="card-title">Великобритания пообещала направить свои войска на Украину при одном условии</div>
+            
+          </div>
+        </a>
+        <a href="https://lenta.ru/news/2026/07/28/zelenskiy-priletel-v-ssha-na-vstrechu-s-trampom/" target="_blank" rel="noopener" class="glass">
+          <img class="card-img" src="https://icdn.lenta.ru/images/2026/07/28/08/20260728085043756/pic_e91b7883de17bd60fbeefe7a6d4b73b1.jpg" alt="Зеленский прилетел в США на встречу с Трампом" loading="lazy">
+          <div class="card-body">
+            <div class="card-cat">lenta.ru</div>
+            <div class="card-title">Зеленский прилетел в США на встречу с Трампом</div>
+            
+          </div>
+        </a>
+        <a href="https://lenta.ru/news/2026/07/28/trampu-snova-ponravilsya-zelenskiy/" target="_blank" rel="noopener" class="glass">
+          <img class="card-img" src="https://icdn.lenta.ru/images/2026/07/28/08/20260728084734770/pic_a16996c7bf902d94d9aef66574d29427.jpg" alt="Трамп снова изменил отношение к Зеленскому" loading="lazy">
+          <div class="card-body">
+            <div class="card-cat">lenta.ru</div>
+            <div class="card-title">Трамп снова изменил отношение к Зеленскому</div>
+            
+          </div>
+        </a>
+    </div>
+  </section>
+  <section class="category-section" id="russia" aria-label="Россия">
+    <div class="section-header">
+      <span>🏛</span>
+      <h2>Россия</h2>
+      <span class="sh-count">15 новостей</span>
+    </div>
+    <div class="card-grid">
+        <a href="https://lenta.ru/news/2026/07/28/long-tegeran-svyazalsya-s-moskvoy-na-fone-atak-vsu-na-iranskoe-sudno-islamskaya-respublika-dal-rossii-obeschanie-po-ormuzskomu-prolivu/" target="_blank" rel="noopener" class="glass">
+          <img class="card-img" src="https://icdn.lenta.ru/images/2026/07/28/08/20260728084730770/pic_eab38a1f6419fcf74d4947cd717b7dff.jpg" alt="Тегеран связался с Москвой на фоне атак ВСУ на иранское судно. Исламская Республика дала России обещание по Ормузскому проливу" loading="lazy">
+          <div class="card-body">
+            <div class="card-cat">lenta.ru</div>
+            <div class="card-title">Тегеран связался с Москвой на фоне атак ВСУ на иранское судно. Исламская Республика дала России обещание по Ормузскому проливу</div>
+            
+          </div>
+        </a>
+        <a href="https://lenta.ru/news/2026/07/28/v-moskve-raskryli-priznanie-estonskih-vlastey/" target="_blank" rel="noopener" class="glass">
+          <img class="card-img" src="https://icdn.lenta.ru/images/2026/07/28/08/20260728084644802/pic_8416b83f1221f8cd8d462cee9c2e5f70.jpg" alt="В Москве раскрыли признание эстонских властей" loading="lazy">
+          <div class="card-body">
+            <div class="card-cat">lenta.ru</div>
+            <div class="card-title">В Москве раскрыли признание эстонских властей</div>
+            
+          </div>
+        </a>
+        <a href="https://lenta.ru/news/2026/07/28/rossiyane-vzyali-motornuyu-lodku-i-propali/" target="_blank" rel="noopener" class="glass">
+          <img class="card-img" src="https://icdn.lenta.ru/images/2026/07/28/08/20260728083620699/pic_e113397a4f335801b24e9fab8dd4d168.jpg" alt="Россияне взяли моторную лодку и пропали" loading="lazy">
+          <div class="card-body">
+            <div class="card-cat">lenta.ru</div>
+            <div class="card-title">Россияне взяли моторную лодку и пропали</div>
+            
+          </div>
+        </a>
+        <a href="https://lenta.ru/news/2026/07/28/minoborony-raskrylo-chislo-sbityh-nad-rossiey-za-noch-ukrainskih-bpla/" target="_blank" rel="noopener" class="glass">
+          <img class="card-img" src="https://icdn.lenta.ru/images/2026/07/28/08/20260728081821527/pic_e3f4ba9b15e449e8e14ace567190aba7.jpg" alt="Минобороны раскрыло число сбитых над Россией за ночь украинских БПЛА" loading="lazy">
+          <div class="card-body">
+            <div class="card-cat">lenta.ru</div>
+            <div class="card-title">Минобороны раскрыло число сбитых над Россией за ночь украинских БПЛА</div>
+            
+          </div>
+        </a>
+        <a href="https://lenta.ru/news/2026/07/28/set-rossiyskih-massazhnyh-salonov-okazalas-mestom-okazaniya-intim-uslug/" target="_blank" rel="noopener" class="glass">
+          <img class="card-img" src="https://icdn.lenta.ru/images/2026/07/28/07/20260728075955638/pic_e7676dd2f54981057cbc58c2fed16fa1.jpg" alt="Сеть российских массажных салонов оказалась местом оказания интим-услуг" loading="lazy">
+          <div class="card-body">
+            <div class="card-cat">lenta.ru</div>
+            <div class="card-title">Сеть российских массажных салонов оказалась местом оказания интим-услуг</div>
+            
+          </div>
+        </a>
+        <a href="https://lenta.ru/news/2026/07/28/moskvicham-rasskazali-o-pogode/" target="_blank" rel="noopener" class="glass">
+          <img class="card-img" src="https://icdn.lenta.ru/images/2026/07/28/07/20260728075810331/pic_e9def5d5415deb5fbb82b8da05db59fe.jpg" alt="Москвичам рассказали о погоде" loading="lazy">
+          <div class="card-body">
+            <div class="card-cat">lenta.ru</div>
+            <div class="card-title">Москвичам рассказали о погоде</div>
+            
+          </div>
+        </a>
+    </div>
+  </section>
+  <section class="category-section" id="tech" aria-label="Технологии">
+    <div class="section-header">
+      <span>🤖</span>
+      <h2>Технологии</h2>
+      <span class="sh-count">6 новостей</span>
+    </div>
+    <div class="card-grid">
+        <a href="https://lenta.ru/news/2026/07/28/rossiyskuyu-seks-blogershu-zaderzhali-za-rasprostranenie-porno/" target="_blank" rel="noopener" class="glass">
+          <img class="card-img" src="https://icdn.lenta.ru/images/2026/07/28/08/20260728083021974/pic_8979a2d69e85eb30324b2e827d902c06.jpg" alt="Российскую секс-блогершу задержали за распространение порно" loading="lazy">
+          <div class="card-body">
+            <div class="card-cat">lenta.ru</div>
+            <div class="card-title">Российскую секс-блогершу задержали за распространение порно</div>
+            
+          </div>
+        </a>
+        <a href="https://lenta.ru/news/2026/07/28/uchenye-svyazali-silnuyu-poteryu-zhira-s-razvitiem-diabeta/" target="_blank" rel="noopener" class="glass">
+          <img class="card-img" src="https://icdn.lenta.ru/images/2026/07/28/08/20260728081045031/pic_75c6fbacc33d7060d7dd7c052e4c8beb.jpg" alt="Ученые связали сильную потерю жира с развитием диабета" loading="lazy">
+          <div class="card-body">
+            <div class="card-cat">lenta.ru</div>
+            <div class="card-title">Ученые связали сильную потерю жира с развитием диабета</div>
+            
+          </div>
+        </a>
+        <a href="https://lenta.ru/news/2026/07/28/erase/" target="_blank" rel="noopener" class="glass">
+          <img class="card-img" src="https://icdn.lenta.ru/images/2026/07/27/17/20260727171848367/pic_9f929b2d8f0ba5172d8da00296bed303.jpg" alt="Раскрыт секрет удаленных с компьютера файлов" loading="lazy">
+          <div class="card-body">
+            <div class="card-cat">lenta.ru</div>
+            <div class="card-title">Раскрыт секрет удаленных с компьютера файлов</div>
+            
+          </div>
+        </a>
+        <a href="https://lenta.ru/news/2026/07/28/charging-fast/" target="_blank" rel="noopener" class="glass">
+          <img class="card-img" src="https://icdn.lenta.ru/images/2026/07/27/17/20260727170113713/pic_1473eaeee0a7161b8758dca8791b8656.jpg" alt="Назван способ зарядить смартфон быстрее" loading="lazy">
+          <div class="card-body">
+            <div class="card-cat">lenta.ru</div>
+            <div class="card-title">Назван способ зарядить смартфон быстрее</div>
+            
+          </div>
+        </a>
+        <a href="https://ria.ru/20260728/vrach-2107441695.html" target="_blank" rel="noopener" class="glass">
+          <img class="card-img" src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='250'><defs><linearGradient id='g' x1='0%' y1='0%' x2='100%' y2='100%' gradientTransform='rotate(148)'><stop offset='0%' stop-color='#059669'/><stop offset='100%' stop-color='#34D399'/></linearGradient></defs><rect width='400' height='250' fill='url(#g)'/></svg>" alt="Страховщик назвал самого востребованного врача по программам ДМС" loading="lazy">
+          <div class="card-body">
+            <div class="card-cat">ria.ru</div>
+            <div class="card-title">Страховщик назвал самого востребованного врача по программам ДМС</div>
+            
+          </div>
+        </a>
+        <a href="https://ria.ru/20260728/uchenye-2107439082.html" target="_blank" rel="noopener" class="glass">
+          <img class="card-img" src="https://cdnn21.img.ria.ru/images/147319/18/1473191839_0:0:3108:1749_650x0_80_0_0_8f76e608b42b216c776ea67bceafce82.jpg" alt="Ректор Сколтеха назвала главную ошибку молодых ученых" loading="lazy">
+          <div class="card-body">
+            <div class="card-cat">ria.ru</div>
+            <div class="card-title">Ректор Сколтеха назвала главную ошибку молодых ученых</div>
+            
+          </div>
+        </a>
+    </div>
+  </section>
+  <section class="category-section" id="culture" aria-label="Культура">
+    <div class="section-header">
+      <span>🎭</span>
+      <h2>Культура</h2>
+      <span class="sh-count">2 новости</span>
+    </div>
+    <div class="card-grid">
+        <a href="https://lenta.ru/news/2026/07/28/sud-opredelilsya-s-resheniem-ob-iske-emelyanenko-k-avtoram-knigi-o-nem/" target="_blank" rel="noopener" class="glass">
+          <img class="card-img" src="https://icdn.lenta.ru/images/2026/07/28/00/20260728003439957/pic_1e13e2658664c648aae000f62275568b.jpg" alt="Суд определился с решением об иске Емельяненко к авторам книги о нем" loading="lazy">
+          <div class="card-body">
+            <div class="card-cat">lenta.ru</div>
+            <div class="card-title">Суд определился с решением об иске Емельяненко к авторам книги о нем</div>
+            
+          </div>
+        </a>
+        <a href="https://ria.ru/20260728/dizayn-2107438880.html" target="_blank" rel="noopener" class="glass">
+          <img class="card-img" src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='250'><defs><linearGradient id='g' x1='0%' y1='0%' x2='100%' y2='100%' gradientTransform='rotate(37)'><stop offset='0%' stop-color='#DB2777'/><stop offset='100%' stop-color='#F472B6'/></linearGradient></defs><rect width='400' height='250' fill='url(#g)'/></svg>" alt="Названы самые прибыльные подработки в сфере искусства в России" loading="lazy">
+          <div class="card-body">
+            <div class="card-cat">ria.ru</div>
+            <div class="card-title">Названы самые прибыльные подработки в сфере искусства в России</div>
+            
+          </div>
+        </a>
+    </div>
+  </section>
+  <section class="category-section" id="sport" aria-label="Спорт">
+    <div class="section-header">
+      <span>⚽</span>
+      <h2>Спорт</h2>
+      <span class="sh-count">2 новости</span>
+    </div>
+    <div class="card-grid">
+        <a href="https://lenta.ru/news/2026/07/28/prezident-i-glavnyy-trener-rossiyskogo-basketbolnogo-kluba/" target="_blank" rel="noopener" class="glass">
+          <img class="card-img" src="https://icdn.lenta.ru/images/2026/07/28/08/20260728084008616/pic_aa7588f0dfd69994559e9725c81da49f.jpg" alt="СК изучит обстоятельства гибели президента и тренера российского баскетбольного клуба" loading="lazy">
+          <div class="card-body">
+            <div class="card-cat">lenta.ru</div>
+            <div class="card-title">СК изучит обстоятельства гибели президента и тренера российского баскетбольного клуба</div>
+            
+          </div>
+        </a>
+        <a href="https://lenta.ru/news/2026/07/28/v-rossii-vyskazalis-o-buduschem-krupneyshego-eksportera-nefti/" target="_blank" rel="noopener" class="glass">
+          <img class="card-img" src="https://icdn.lenta.ru/images/2026/07/27/13/20260727131815695/pic_48a27fbb528283710d402cf01b18d17b.jpg" alt="В России высказались о будущем крупнейшего экспортера нефти" loading="lazy">
+          <div class="card-body">
+            <div class="card-cat">lenta.ru</div>
+            <div class="card-title">В России высказались о будущем крупнейшего экспортера нефти</div>
+            
+          </div>
+        </a>
+    </div>
+  </section>
+</div>
+
+<!-- ═══ MOST READ ═══ -->
+<div class="container">
+  <section class="most-read" aria-label="Самое читаемое">
+    <div class="section-header">
+      <h2>Самое читаемое</h2>
+    </div>
+    <div class="glass">
+      <div class="most-read-list">
+        
+        <a href="https://lenta.ru/news/2026/07/28/strategiyu-trampa-protiv-irana-raskryli/" target="_blank" rel="noopener" class="mr-item">
+          <span class="mr-num">1</span>
+          <div class="mr-content">
+            <div class="mr-title">Стратегию Трампа против Ирана раскрыли</div>
+            <div class="mr-meta">Мир · lenta.ru</div>
+          </div>
+        </a>
+        <a href="https://lenta.ru/news/2026/07/28/pristavy-vzyalis-za-dolinu-iz-za-obnaruzhennogo-dolga/" target="_blank" rel="noopener" class="mr-item">
+          <span class="mr-num">2</span>
+          <div class="mr-content">
+            <div class="mr-title">Приставы взялись за Долину из-за обнаруженного долга</div>
+            <div class="mr-meta">Мир · lenta.ru</div>
+          </div>
+        </a>
+        <a href="https://lenta.ru/news/2026/07/28/long-tegeran-svyazalsya-s-moskvoy-na-fone-atak-vsu-na-iranskoe-sudno-islamskaya-respublika-dal-rossii-obeschanie-po-ormuzskomu-prolivu/" target="_blank" rel="noopener" class="mr-item">
+          <span class="mr-num">3</span>
+          <div class="mr-content">
+            <div class="mr-title">Тегеран связался с Москвой на фоне атак ВСУ на иранское судно. Исламская Республика дала России обещание по Ормузскому проливу</div>
+            <div class="mr-meta">Россия · lenta.ru</div>
+          </div>
+        </a>
+        <a href="https://lenta.ru/news/2026/07/28/v-moskve-raskryli-priznanie-estonskih-vlastey/" target="_blank" rel="noopener" class="mr-item">
+          <span class="mr-num">4</span>
+          <div class="mr-content">
+            <div class="mr-title">В Москве раскрыли признание эстонских властей</div>
+            <div class="mr-meta">Россия · lenta.ru</div>
+          </div>
+        </a>
+        <a href="https://lenta.ru/news/2026/07/28/rossiyskuyu-seks-blogershu-zaderzhali-za-rasprostranenie-porno/" target="_blank" rel="noopener" class="mr-item">
+          <span class="mr-num">5</span>
+          <div class="mr-content">
+            <div class="mr-title">Российскую секс-блогершу задержали за распространение порно</div>
+            <div class="mr-meta">Технологии · lenta.ru</div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ═══ MULTIMEDIA ═══ -->
+<div class="container">
+  <section class="multimedia" aria-label="Мультимедиа">
+    <div class="section-header">
+      <h2>Мультимедиа</h2>
+    </div>
+    <div class="mm-grid">
+      
+        <div class="mm-card">
+          <a href="https://lenta.ru/news/2026/07/28/sud-opredelilsya-s-resheniem-ob-iske-emelyanenko-k-avtoram-knigi-o-nem/" target="_blank" rel="noopener" class="glass">
+            <img src="https://icdn.lenta.ru/images/2026/07/28/00/20260728003439957/pic_1e13e2658664c648aae000f62275568b.jpg" alt="Суд определился с решением об иске Емельяненко к авторам книги о нем" loading="lazy">
+            <div class="mm-body">
+              <div class="mm-cat">Культура</div>
+              <div class="mm-title">Суд определился с решением об иске Емельяненко к авторам книги о нем</div>
+              
+            </div>
+          </a>
+        </div>
+        <div class="mm-card">
+          <a href="https://ria.ru/20260728/dizayn-2107438880.html" target="_blank" rel="noopener" class="glass">
+            <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='250'><defs><linearGradient id='g' x1='0%' y1='0%' x2='100%' y2='100%' gradientTransform='rotate(37)'><stop offset='0%' stop-color='#DB2777'/><stop offset='100%' stop-color='#F472B6'/></linearGradient></defs><rect width='400' height='250' fill='url(#g)'/></svg>" alt="Названы самые прибыльные подработки в сфере искусства в России" loading="lazy">
+            <div class="mm-body">
+              <div class="mm-cat">Культура</div>
+              <div class="mm-title">Названы самые прибыльные подработки в сфере искусства в России</div>
+              
+            </div>
+          </a>
+        </div>
+    </div>
+  </section>
+</div>
+</main>
+
+<!-- ═══ FOOTER ═══ -->
+<footer class="site-footer" role="contentinfo">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="fb-name">Nora <span>News</span></div>
+        <p class="fb-desc">Ежедневный автоматический дайджест новостей. Отобранные и структурированные новости из проверенных источников.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Рубрики</h4>
+        <ul>
+          <li><a href="#world">Мир</a></li>
+          <li><a href="#russia">Россия</a></li>
+          <li><a href="#tech">Технологии</a></li>
+          <li><a href="#culture">Культура</a></li>
+          <li><a href="#sport">Спорт</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Источники</h4>
+        <ul>
+          <li><a href="https://lenta.ru" target="_blank" rel="noopener">Lenta.ru</a></li>
+          <li><a href="https://vz.ru" target="_blank" rel="noopener">VZ.ru</a></li>
+          <li><a href="https://ria.ru" target="_blank" rel="noopener">RIA.ru</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>О проекте</h4>
+        <ul>
+          <li><a href="/archive.html">Архив дайджестов</a></li>
+          <li><a href="https://github.com" target="_blank" rel="noopener">GitHub</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>Nora News · 2026</span>
+      <span>Автоматическая генерация · Обновляется ежедневно</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

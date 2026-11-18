@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Дайджест #259 — Nora News</title>
+<meta name="description" content="Ежедневный дайджест новостей #259">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════
+   DESIGN TOKENS
+   ═══════════════════════════════════════ */
+:root {
+  --bg: #0B0B12;
+  --bg-gradient: radial-gradient(ellipse at 20% 0%, rgba(139,92,246,0.06) 0%, transparent 50%),
+                 radial-gradient(ellipse at 80% 100%, rgba(139,92,246,0.03) 0%, transparent 50%);
+  --glass: rgba(255,255,255,0.04);
+  --glass-hover: rgba(255,255,255,0.07);
+  --glass-border: rgba(255,255,255,0.08);
+  --glass-border-hover: rgba(139,92,246,0.4);
+  --accent: #A78BFA;
+  --accent-dim: rgba(139,92,246,0.15);
+  --text: #F4F4F8;
+  --text-secondary: #9CA3AF;
+  --text-muted: #6B7280;
+  --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+  --blur: blur(16px);
+  --radius: 14px;
+  --radius-sm: 10px;
+  --max-w: 1200px;
+}
+
+/* ═══════════════════════════════════════
+   RESET & BASE
+   ═══════════════════════════════════════ */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  background-image: var(--bg-gradient);
+  background-attachment: fixed;
+  color: var(--text);
+  min-height: 100vh;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+a { color: inherit; text-decoration: none; }
+img { display: block; max-width: 100%; height: auto; }
+
+/* ═══════════════════════════════════════
+   TICKER BAR
+   ═══════════════════════════════════════ */
+.ticker-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 24px;
+  background: var(--glass);
+  backdrop-filter: var(--blur);
+  border-bottom: 1px solid var(--glass-border);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  overflow: hidden;
+  position: relative;
+  z-index: 100;
+}
+.ticker-label {
+  color: var(--accent);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.ticker-date {
+  color: var(--text-muted);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.ticker-scroll {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+.ticker-track {
+  display: flex;
+  gap: 40px;
+  animation: ticker 40s linear infinite;
+  white-space: nowrap;
+}
+.ticker-item { color: var(--text-secondary); }
+.ticker-item::before { content: '·'; color: var(--accent); margin-right: 8px; }
+@keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+/* ═══════════════════════════════════════
+   HEADER (STICKY, BLUR)
+   ═══════════════════════════════════════ */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 90;
+  background: rgba(11,11,18,0.75);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--glass-border);
+}
+.header-inner {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 60px;
+}
+.logo {
+  font-family: var(--font-body);
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  white-space: nowrap;
+}
+.logo span { color: var(--accent); }
+.nav-links {
+  display: flex;
+  gap: 0;
+  list-style: none;
+}
+.nav-links a {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  padding: 8px 14px;
+  border-radius: var(--radius-sm);
+  transition: all 0.2s;
+}
+.nav-links a:hover { color: var(--text); background: var(--glass); }
+.header-actions { display: flex; align-items: center; gap: 12px; }
+.search-btn {
+  width: 36px; height: 36px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 16px;
+}
+.search-btn:hover { border-color: var(--glass-border-hover); color: var(--accent); }
+.burger { display: none; background: none; border: none; color: var(--text); font-size: 22px; cursor: pointer; }
+
+/* ═══════════════════════════════════════
+   GLASS CARD
+   ═══════════════════════════════════════ */
+.glass {
+  background: var(--glass);
+  backdrop-filter: var(--blur);
+  -webkit-backdrop-filter: var(--blur);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  transition: all 0.25s ease;
+}
+.glass:hover {
+  background: var(--glass-hover);
+  border-color: var(--glass-border-hover);
+  box-shadow: 0 0 20px rgba(139,92,246,0.08);
+}
+
+/* ═══════════════════════════════════════
+   CONTAINER
+   ═══════════════════════════════════════ */
+.container { max-width: var(--max-w); margin: 0 auto; padding: 0 24px; }
+
+/* ═══════════════════════════════════════
+   HERO: 3 COLUMNS
+   ═══════════════════════════════════════ */
+.hero {
+  display: grid;
+  grid-template-columns: 1fr 1.6fr 1fr;
+  gap: 20px;
+  padding: 32px 0;
+}
+
+/* Left column: important news list */
+.hero-left { display: flex; flex-direction: column; gap: 16px; }
+.hero-left .section-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--glass-border);
+}
+
+/* Center: main story */
+.hero-center .glass { overflow: hidden; }
+.hero-center .hero-img {
+  width: 100%;
+  aspect-ratio: 16/9;
+  object-fit: cover;
+  border-radius: var(--radius) var(--radius) 0 0;
+}
+.hero-center .hero-body { padding: 24px; }
+.hero-center .hero-category {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 10px;
+}
+.hero-center .hero-title {
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.25;
+  margin-bottom: 12px;
+}
+.hero-center .hero-desc {
+  font-size: 15px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+.hero-center .hero-meta {
+  display: flex;
+  gap: 16px;
+  margin-top: 16px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+/* Right column: opinions */
+.hero-right { display: flex; flex-direction: column; gap: 16px; }
+.hero-right .section-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--glass-border);
+}
+
+/* ═══════════════════════════════════════
+   ARTICLE CARDS (INLINE)
+   ═══════════════════════════════════════ */
+.article-inline {
+  display: block;
+  padding: 14px;
+}
+.article-inline .ai-cat {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+}
+.article-inline .ai-title {
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.4;
+  margin-bottom: 6px;
+}
+.article-inline .ai-desc {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.article-inline .ai-meta {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-muted);
+  margin-top: 8px;
+}
+
+/* Opinion card */
+.opinion-card {
+  display: block;
+  padding: 16px;
+  border-left: 3px solid var(--accent);
+}
+.opinion-card .oc-author {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--accent);
+  margin-bottom: 6px;
+}
+.opinion-card .oc-title {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+  font-style: italic;
+}
+
+/* ═══════════════════════════════════════
+   SECTION HEADER
+   ═══════════════════════════════════════ */
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 24px 0 16px;
+  border-bottom: 1px solid var(--glass-border);
+  margin-bottom: 20px;
+}
+.section-header h2 {
+  font-family: var(--font-body);
+  font-size: 20px;
+  font-weight: 700;
+}
+.section-header .sh-count {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-left: auto;
+}
+
+/* ═══════════════════════════════════════
+   CATEGORY SECTION: 3-4 CARDS
+   ═══════════════════════════════════════ */
+.category-section { padding-bottom: 32px; }
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+.card-grid .glass { padding: 0; overflow: hidden; display: flex; flex-direction: column; }
+.card-img {
+  width: 100%;
+  aspect-ratio: 16/10;
+  object-fit: cover;
+}
+.card-body { padding: 16px; flex: 1; display: flex; flex-direction: column; }
+.card-cat {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+.card-title {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.35;
+  margin-bottom: 8px;
+  flex: 1;
+}
+.card-desc {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.card-meta {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-muted);
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--glass-border);
+  display: flex;
+  justify-content: space-between;
+}
+
+/* ═══════════════════════════════════════
+   MOST READ
+   ═══════════════════════════════════════ */
+.most-read { padding: 32px 0; }
+.most-read-list { display: flex; flex-direction: column; gap: 2px; }
+.mr-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 16px;
+}
+.mr-num {
+  font-family: var(--font-mono);
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--accent);
+  line-height: 1;
+  min-width: 40px;
+  opacity: 0.6;
+}
+.mr-content { flex: 1; }
+.mr-title { font-size: 15px; font-weight: 600; line-height: 1.4; margin-bottom: 4px; }
+.mr-meta {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-muted);
+}
+
+/* ═══════════════════════════════════════
+   MULTIMEDIA
+   ═══════════════════════════════════════ */
+.multimedia { padding-bottom: 40px; }
+.mm-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.mm-card .glass { overflow: hidden; }
+.mm-card img { width: 100%; aspect-ratio: 16/9; object-fit: cover; }
+.mm-card .mm-body { padding: 20px; }
+.mm-card .mm-cat {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+.mm-card .mm-title { font-size: 18px; font-weight: 600; line-height: 1.35; }
+.mm-card .mm-desc {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin-top: 8px;
+}
+
+/* ═══════════════════════════════════════
+   FOOTER
+   ═══════════════════════════════════════ */
+.site-footer {
+  margin-top: 40px;
+  padding: 48px 0 24px;
+  border-top: 1px solid var(--glass-border);
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 40px;
+  margin-bottom: 40px;
+}
+.footer-brand .fb-name {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+.footer-brand .fb-name span { color: var(--accent); }
+.footer-brand .fb-desc {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.6;
+  max-width: 280px;
+}
+.footer-col h4 {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 16px;
+}
+.footer-col ul { list-style: none; }
+.footer-col li { margin-bottom: 10px; }
+.footer-col a {
+  font-size: 13px;
+  color: var(--text-secondary);
+  transition: color 0.2s;
+}
+.footer-col a:hover { color: var(--accent); }
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 24px;
+  border-top: 1px solid var(--glass-border);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+/* ═══════════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════════ */
+@media (max-width: 1024px) {
+  .hero { grid-template-columns: 1fr 1fr; }
+  .hero-right { display: none; }
+  .card-grid { grid-template-columns: repeat(2, 1fr); }
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 768px) {
+  .hero { grid-template-columns: 1fr; }
+  .hero-center .hero-title { font-size: 22px; }
+  .card-grid { grid-template-columns: 1fr; }
+  .mm-grid { grid-template-columns: 1fr; }
+  .nav-links { display: none; }
+  .burger { display: block; }
+  .header-inner { height: 52px; }
+  .logo { font-size: 18px; }
+  .footer-grid { grid-template-columns: 1fr; gap: 28px; }
+  .footer-bottom { flex-direction: column; gap: 8px; text-align: center; }
+  .ticker-bar { font-size: 11px; padding: 6px 16px; }
+}
+
+/* ═══════════════════════════════════════
+   ANIMATIONS
+   ═══════════════════════════════════════ */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.hero, .category-section, .most-read, .multimedia {
+  animation: fadeUp 0.5s ease-out both;
+}
+.category-section:nth-child(2) { animation-delay: 0.05s; }
+.category-section:nth-child(3) { animation-delay: 0.10s; }
+.category-section:nth-child(4) { animation-delay: 0.15s; }
+</style>
+</head>
+<body>
+
+<!-- ═══ TICKER BAR ═══ -->
+<div class="ticker-bar" aria-label="Срочные новости">
+  <span class="ticker-label">⚡ Срочно</span>
+  <span class="ticker-date">08.11.2026</span>
+  <div class="ticker-scroll">
+    <div class="ticker-track" id="ticker-track">
+      <span class="ticker-item">В словах Зеленского о территориях нашли противоречия</span>
+      <span class="ticker-item">В МИД оценили следствие о подрывах «Северных потоков» в Германии</span>
+      <span class="ticker-item">Силы ПВО за ночь сбили почти полторы сотни беспилотников над российскими регионами</span>
+      <span class="ticker-item">Названы сроки встречи Путина с членами СПЧ</span>
+      <span class="ticker-item">В Госдуме рассказали о новом способе борьбы с телефонными мошенниками</span>
+      <span class="ticker-item">Ученые рассказали, насколько прогреется мерзлота в Норильске к 2050 году</span>
+      <span class="ticker-item">В словах Зеленского о территориях нашли противоречия</span>
+      <span class="ticker-item">В МИД оценили следствие о подрывах «Северных потоков» в Германии</span>
+      <span class="ticker-item">Силы ПВО за ночь сбили почти полторы сотни беспилотников над российскими регионами</span>
+      <span class="ticker-item">Названы сроки встречи Путина с членами СПЧ</span>
+      <span class="ticker-item">В Госдуме рассказали о новом способе борьбы с телефонными мошенниками</span>
+      <span class="ticker-item">Ученые рассказали, насколько прогреется мерзлота в Норильске к 2050 году</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ HEADER ═══ -->
+<header class="site-header" role="banner">
+  <div class="header-inner">
+    <button class="burger" aria-label="Меню">☰</button>
+    <a href="/" class="logo">Nora <span>News</span></a>
+    <nav aria-label="Рубрики">
+      <ul class="nav-links" role="menubar">
+        <li><a href="#world" role="menuitem">Мир</a></li>
+        <li><a href="#russia" role="menuitem">Россия</a></li>
+        <li><a href="#tech" role="menuitem">Технологии</a></li>
+        <li><a href="#culture" role="menuitem">Культура</a></li>
+        <li><a href="#sport" role="menuitem">Спорт</a></li>
+      </ul>
+    </nav>
+    <div class="header-actions">
+      <button class="search-btn" aria-label="Поиск">🔍</button>
+    </div>
+  </div>
+</header>
+
+<!-- ═══ HERO: 3 COLUMNS ═══ -->
+<main>
+<div class="container">
+  <section class="hero" aria-label="Главные новости">
+
+    <!-- LEFT: top stories list -->
+    <div class="hero-left">
+      <div class="section-label">Важное</div>
+      
+      <a href="https://lenta.ru/news/2026/11/08/zhurnalist-zametil-strannuyu-detal-v-slovah-zelenskogo-o-territoriyah/" target="_blank" rel="noopener" class="glass article-inline">
+        <div class="ai-cat">Мир</div>
+        <div class="ai-title">В словах Зеленского о территориях нашли противоречия</div>
+        <div class="ai-meta">lenta.ru</div>
+      </a>
+      <a href="https://lenta.ru/news/2026/11/08/v-mid-otsenili-sledstvie-o-podryvah-severnogo-potoka-v-germanii/" target="_blank" rel="noopener" class="glass article-inline">
+        <div class="ai-cat">Мир</div>
+        <div class="ai-title">В МИД оценили следствие о подрывах «Северных потоков» в Германии</div>
+        <div class="ai-meta">lenta.ru</div>
+      </a>
+      <a href="https://lenta.ru/news/2026/11/08/sily-pvo-za-noch-sbili-pochti-poltory-sotni-bespilotnikov-nad-rossiyskimi-regionami/" target="_blank" rel="noopener" class="glass article-inline">
+        <div class="ai-cat">Россия</div>
+        <div class="ai-title">Силы ПВО за ночь сбили почти полторы сотни беспилотников над российскими регионами</div>
+        <div class="ai-meta">lenta.ru</div>
+      </a>
+      <a href="https://lenta.ru/news/2026/11/08/nazvany-sroki-vstrechi-putina-s-chlenami-spch/" target="_blank" rel="noopener" class="glass article-inline">
+        <div class="ai-cat">Россия</div>
+        <div class="ai-title">Названы сроки встречи Путина с членами СПЧ</div>
+        <div class="ai-meta">lenta.ru</div>
+      </a>
+      <a href="https://lenta.ru/news/2026/11/08/v-gosdume-rasskazali-o-novom-sposobe-borby-s-telefonnymi-moshennikami/" target="_blank" rel="noopener" class="glass article-inline">
+        <div class="ai-cat">Технологии</div>
+        <div class="ai-title">В Госдуме рассказали о новом способе борьбы с телефонными мошенниками</div>
+        <div class="ai-meta">lenta.ru</div>
+      </a>
+    </div>
+
+    <!-- CENTER: featured story -->
+    <div class="hero-center">
+      
+      <a href="https://lenta.ru/news/2026/11/08/zhurnalist-zametil-strannuyu-detal-v-slovah-zelenskogo-o-territoriyah/" target="_blank" rel="noopener" class="glass">
+        <img class="hero-img" src="https://icdn.lenta.ru/images/2026/11/08/08/20261108084846958/pic_5c67f2f83bee0c3e8276087b7b110020.jpg" alt="В словах Зеленского о территориях нашли противоречия" loading="lazy">
+        <div class="hero-body">
+          <div class="hero-category">Мир</div>
+          <div class="hero-title">В словах Зеленского о территориях нашли противоречия</div>
+          
+          <div class="hero-meta">
+            <span>lenta.ru</span>
+            <span>Дайджест #259</span>
+          </div>
+        </div>
+      </a>
+    </div>
+
+    <!-- RIGHT: opinions -->
+    <div class="hero-right">
+      <div class="section-label">Мнения</div>
+      
+      <a href="https://lenta.ru/news/2026/11/08/zhurnalist-zametil-strannuyu-detal-v-slovah-zelenskogo-o-territoriyah/" target="_blank" rel="noopener" class="glass opinion-card">
+        <div class="oc-author">Аналитик</div>
+        <div class="oc-title">В словах Зеленского о территориях нашли противоречия</div>
+      </a>
+      <a href="https://lenta.ru/news/2026/11/08/sily-pvo-za-noch-sbili-pochti-poltory-sotni-bespilotnikov-nad-rossiyskimi-regionami/" target="_blank" rel="noopener" class="glass opinion-card">
+        <div class="oc-author">Обозреватель</div>
+        <div class="oc-title">Силы ПВО за ночь сбили почти полторы сотни беспилотников над российскими регионами</div>
+      </a>
+      <a href="https://lenta.ru/news/2026/11/08/v-gosdume-rasskazali-o-novom-sposobe-borby-s-telefonnymi-moshennikami/" target="_blank" rel="noopener" class="glass opinion-card">
+        <div class="oc-author">Корреспондент</div>
+        <div class="oc-title">В Госдуме рассказали о новом способе борьбы с телефонными мошенниками</div>
+      </a>
+    </div>
+
+  </section>
+</div>
+
+<!-- ═══ CATEGORY SECTIONS ═══ -->
+<div class="container">
+
+  <section class="category-section" id="world" aria-label="Мир">
+    <div class="section-header">
+      <span>🌍</span>
+      <h2>Мир</h2>
+      <span class="sh-count">15 новостей</span>
+    </div>
+    <div class="card-grid">
+        <a href="https://lenta.ru/news/2026/11/08/zhurnalist-zametil-strannuyu-detal-v-slovah-zelenskogo-o-territoriyah/" target="_blank" rel="noopener" class="glass">
+          <img class="card-img" src="https://icdn.lenta.ru/images/2026/11/08/08/20261108084846958/pic_5c67f2f83bee0c3e8276087b7b110020.jpg" alt="В словах Зеленского о территориях нашли противоречия" loading="lazy">
+          <div class="card-body">
+            <div class="card-cat">lenta.ru</div>
+            <div class="card-title">В словах Зеленского о территориях нашли противоречия</div>
+            
+          </div>
+        </a>
+        <a href="https://lenta.ru/news/2026/11/08/v-mid-otsenili-sledstvie-o-podryvah-severnogo-potoka-v-germanii/" target="_blank" rel="noopener" class="glass">
+          <img class="card-img" src="https://icdn.lenta.ru/images/2026/11/08/08/20261108080827927/pic_14cc7a07968d8f2f9847685d34092a35.jpg" alt="В МИД оценили следствие о подрывах «Северных потоков» в Германии" loading="lazy">
+          <div class="card-body">
+            <div class="card-cat">lenta.ru</div>
+            <div class="card-title">В МИД оценили следствие о подрывах «Северных потоков» в Германии</div>
+            
+          </div>
+        </a>
+        <a href="https://lenta.ru/news/2026/11/08/student-medik-iz-nigerii-osvoil-buryatskiy-yazyk-i-polyubil-buuzy-v-ulan-ude/" target="_blank" rel="noopener" class="glass">
+          <img class="card-img" src="https://icdn.lenta.ru/images/2026/11/08/08/20261108082338249/pic_712e2d5def982cc2769817fbcb8cfb06.jpg" alt="Студент-медик из Нигерии освоил бурятский язык и полюбил буузы в Улан-Удэ" loading="lazy">
+          <div class="card-body">
+            <div class="card-cat">lenta.ru</div>
+            <div class="card-title">Студент-медик из Нигерии освоил бурятский язык и полюбил буузы в Улан-Удэ</div>
+            
+          </div>
+        </a>
+        <a href="https://lenta.ru/news/2026/11/08/posolstvo-rossii-sdelalo-zayavlenie-o-reputatsii-shveytsarii/" target="_blank" rel="noopener" class="glass">
+          <img class="card-img" src="https://icdn.lenta.ru/images/2026/11/08/08/20261108081113298/pic_4a915b26691e61f5ebce669f066ff56b.jpg" alt="Посольство России сделало заявление о репутации Швейцарии" loading="lazy">
+          <div class="card-body">
+            <div class="card-cat">lenta.ru</div>
+            <div class="card-title">Посольство России сделало заявление о репутации Швейцарии</div>
+            
+          </div>
+        </a>
+        <a href="https://lenta.ru/news/2026/11/08/81-letnyaya-otshelnitsa-agafya-lykova-propala-so-svyazi-v-tayge-na-nedelyu/" target="_blank" rel="noopener" class="glass">
+          <img class="card-img" src="https://icdn.lenta.ru/images/2026/11/08/08/20261108080246531/pic_50bcd00b5488b2b8d2a35970d93a3450.jpg" alt="81-летняя отшельница Агафья Лыкова пропала со связи в тайге на неделю" loading="lazy">
+          <div class="card-body">
+            <div class="card-cat">lenta.ru</div>
+            <div class="card-title">81-летняя отшельница Агафья Лыкова пропала со связи в тайге на неделю</div>
+            
+          </div>
+        </a>
+        <a href="https://lenta.ru/news/2026/11/08/vrach-rasskazal-o-skrytyh-priznakah-raka-na-rannih-stadiyah/" target="_blank" rel="noopener" class="glass">
+          <img class="card-img" src="https://icdn.lenta.ru/images/2026/11/07/18/20261107184758077/pic_63ea482aa9ec2bc625a339a2ec26683b.jpg" alt="Врач рассказал о скрытых признаках рака на ранних стадиях" loading="lazy">
+          <div class="card-body">
+            <div class="card-cat">lenta.ru</div>
+            <div class="card-title">Врач рассказал о скрытых признаках рака на ранних стадиях</div>
+            
+          </div>
+        </a>
+    </div>
+  </section>
+  <section class="category-section" id="russia" aria-label="Россия">
+    <div class="section-header">
+      <span>🏛</span>
+      <h2>Россия</h2>
+      <span class="sh-count">13 новостей</span>
+    </div>
+    <div class="card-grid">
+        <a href="https://lenta.ru/news/2026/11/08/sily-pvo-za-noch-sbili-pochti-poltory-sotni-bespilotnikov-nad-rossiyskimi-regionami/" target="_blank" rel="noopener" class="glass">
+          <img class="card-img" src="https://icdn.lenta.ru/assets/webpack/images/lenta_og.8735b949.png" alt="Силы ПВО за ночь сбили почти полторы сотни беспилотников над российскими регионами" loading="lazy">
+          <div class="card-body">
+            <div class="card-cat">lenta.ru</div>
+            <div class="card-title">Силы ПВО за ночь сбили почти полторы сотни беспилотников над российскими регионами</div>
+            
+          </div>
+        </a>
+        <a href="https://lenta.ru/news/2026/11/08/nazvany-sroki-vstrechi-putina-s-chlenami-spch/" target="_blank" rel="noopener" class="glass">
+          <img class="card-img" src="https://icdn.lenta.ru/images/2026/11/08/08/20261108083223343/pic_bedb9bea564869e25b95cd4d38da5ced.jpg" alt="Названы сроки встречи Путина с членами СПЧ" loading="lazy">
+          <div class="card-body">
+            <div class="card-cat">lenta.ru</div>
+            <div class="card-title">Названы сроки встречи Путина с членами СПЧ</div>
+            
+          </div>
+        </a>
+        <a href="https://lenta.ru/news/2026/11/08/v-rossiyskom-regione-oblomki-bespilotnika-povredili-avtomobilnyy-most/" target="_blank" rel="noopener" class="glass">
+          <img class="card-img" src="https://icdn.lenta.ru/images/2026/11/08/08/20261108081721780/pic_7446a2cf13faa41196fa6b1aa9cbe630.jpg" alt="В российском регионе обломки беспилотника повредили автомобильный мост" loading="lazy">
+          <div class="card-body">
+            <div class="card-cat">lenta.ru</div>
+            <div class="card-title">В российском регионе обломки беспилотника повредили автомобильный мост</div>
+            
+          </div>
+        </a>
+        <a href="https://lenta.ru/news/2026/11/08/raskryta-obstanovka-na-ukraine-posle-rossiyskih-udarov/" target="_blank" rel="noopener" class="glass">
+          <img class="card-img" src="https://icdn.lenta.ru/images/2026/11/08/07/20261108072431068/pic_77096d51fc4ea2fb9a40fe2904fde3e3.jpg" alt="Раскрыта обстановка на Украине после российских ударов" loading="lazy">
+          <div class="card-body">
+            <div class="card-cat">lenta.ru</div>
+            <div class="card-title">Раскрыта обстановка на Украине после российских ударов</div>
+            
+          </div>
+        </a>
+        <a href="https://lenta.ru/news/2026/11/08/neskolko-vzryvov-razdalos-okolo-turetskogo-otelya-s-rossiyanami/" target="_blank" rel="noopener" class="glass">
+          <img class="card-img" src="https://icdn.lenta.ru/images/2026/11/08/06/20261108064900622/pic_835515b3f6ba8a931b31e6a9bb25b55d.jpg" alt="Несколько взрывов раздалось около турецкого отеля с россиянами" loading="lazy">
+          <div class="card-body">
+            <div class="card-cat">lenta.ru</div>
+            <div class="card-title">Несколько взрывов раздалось около турецкого отеля с россиянами</div>
+            
+          </div>
+        </a>
+        <a href="https://lenta.ru/news/2026/11/08/rossiyanam-nazvali-samye-vostrebovannye-professii-cherez-desyat-let/" target="_blank" rel="noopener" class="glass">
+          <img class="card-img" src="https://icdn.lenta.ru/images/2026/11/08/04/20261108040059042/pic_cba5e8701a81c58ba5b1db7c6d452465.jpg" alt="Россиянам назвали самые востребованные профессии через десять лет" loading="lazy">
+          <div class="card-body">
+            <div class="card-cat">lenta.ru</div>
+            <div class="card-title">Россиянам назвали самые востребованные профессии через десять лет</div>
+            
+          </div>
+        </a>
+    </div>
+  </section>
+  <section class="category-section" id="tech" aria-label="Технологии">
+    <div class="section-header">
+      <span>🤖</span>
+      <h2>Технологии</h2>
+      <span class="sh-count">2 новости</span>
+    </div>
+    <div class="card-grid">
+        <a href="https://lenta.ru/news/2026/11/08/v-gosdume-rasskazali-o-novom-sposobe-borby-s-telefonnymi-moshennikami/" target="_blank" rel="noopener" class="glass">
+          <img class="card-img" src="https://icdn.lenta.ru/images/2026/11/08/06/20261108061116837/pic_ecee9e2a4e2b2494d3170170940e59c6.jpg" alt="В Госдуме рассказали о новом способе борьбы с телефонными мошенниками" loading="lazy">
+          <div class="card-body">
+            <div class="card-cat">lenta.ru</div>
+            <div class="card-title">В Госдуме рассказали о новом способе борьбы с телефонными мошенниками</div>
+            
+          </div>
+        </a>
+        <a href="https://ria.ru/20261108/klimat-2130058597.html" target="_blank" rel="noopener" class="glass">
+          <img class="card-img" src="https://cdnn21.imgria.ru/images/07e9/08/1c/2038165490_0:119:3071:1846_650x0_80_0_0_b1876f2e80753cab03dbb1acb703a2b1.jpg" alt="Ученые рассказали, насколько прогреется мерзлота в Норильске к 2050 году" loading="lazy">
+          <div class="card-body">
+            <div class="card-cat">ria.ru</div>
+            <div class="card-title">Ученые рассказали, насколько прогреется мерзлота в Норильске к 2050 году</div>
+            
+          </div>
+        </a>
+    </div>
+  </section>
+  <section class="category-section" id="culture" aria-label="Культура">
+    <div class="section-header">
+      <span>🎭</span>
+      <h2>Культура</h2>
+      <span class="sh-count">4 новости</span>
+    </div>
+    <div class="card-grid">
+        <a href="https://lenta.ru/news/2026/11/08/ekspert-ob-yasnil-nedopusk-zhurnalistov-do-taynoy-tyurmy-pod-kievom/" target="_blank" rel="noopener" class="glass">
+          <img class="card-img" src="https://icdn.lenta.ru/images/2026/11/08/05/20261108055059520/pic_63e439ba2613662734546d24f612e315.jpg" alt="Эксперт объяснил недопуск журналистов до «тайной тюрьмы» под Киевом" loading="lazy">
+          <div class="card-body">
+            <div class="card-cat">lenta.ru</div>
+            <div class="card-title">Эксперт объяснил недопуск журналистов до «тайной тюрьмы» под Киевом</div>
+            
+          </div>
+        </a>
+        <a href="https://lenta.ru/news/2026/11/08/stalo-izvestno-o-haraktere-predlozheniya-trampa-glave-ufc/" target="_blank" rel="noopener" class="glass">
+          <img class="card-img" src="https://icdn.lenta.ru/images/2026/11/08/05/20261108054009677/pic_a385199588509a3513fc945d9d22a993.jpg" alt="Стало известно о характере предложения Трампа главе UFC" loading="lazy">
+          <div class="card-body">
+            <div class="card-cat">lenta.ru</div>
+            <div class="card-title">Стало известно о характере предложения Трампа главе UFC</div>
+            
+          </div>
+        </a>
+        <a href="https://lenta.ru/news/2026/11/08/long-glavu-ofisa-zelenskogo-oshtrafuyut-za-russkiy-yazyk-zaharova-sravnila-situatsiyu-s-alisoy-v-strane-chudes-i-predlozhila-napisat-knigu/" target="_blank" rel="noopener" class="glass">
+          <img class="card-img" src="https://icdn.lenta.ru/images/2026/11/07/22/20261107220325002/pic_7323765cbd21ad4f75bbc77988e802eb.jpg" alt="Главу офиса Зеленского оштрафуют за русский язык. Захарова сравнила ситуацию с «Алисой в стране чудес» и предложила написать книгу" loading="lazy">
+          <div class="card-body">
+            <div class="card-cat">lenta.ru</div>
+            <div class="card-title">Главу офиса Зеленского оштрафуют за русский язык. Захарова сравнила ситуацию с «Алисой в стране чудес» и предложила написать книгу</div>
+            
+          </div>
+        </a>
+        <a href="https://ria.ru/20261108/zelenskiy-2130062371.html" target="_blank" rel="noopener" class="glass">
+          <img class="card-img" src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='250'><defs><linearGradient id='g' x1='0%' y1='0%' x2='100%' y2='100%' gradientTransform='rotate(111)'><stop offset='0%' stop-color='#DB2777'/><stop offset='100%' stop-color='#F472B6'/></linearGradient></defs><rect width='400' height='250' fill='url(#g)'/></svg>" alt="Журналист заметил странную деталь в словах Зеленского о территориях" loading="lazy">
+          <div class="card-body">
+            <div class="card-cat">ria.ru</div>
+            <div class="card-title">Журналист заметил странную деталь в словах Зеленского о территориях</div>
+            
+          </div>
+        </a>
+    </div>
+  </section>
+  <section class="category-section" id="sport" aria-label="Спорт">
+    <div class="section-header">
+      <span>⚽</span>
+      <h2>Спорт</h2>
+      <span class="sh-count">4 новости</span>
+    </div>
+    <div class="card-grid">
+        <a href="https://lenta.ru/news/2026/11/08/bolee-20-chelovek-postradali-v-rezultate-nochnogo-zemletryaseniya-v-yaponii/" target="_blank" rel="noopener" class="glass">
+          <img class="card-img" src="https://icdn.lenta.ru/images/2026/11/08/08/20261108082945871/pic_153127db4ef44d8011584716026dedbb.jpg" alt="Более 20 человек пострадали в результате ночного землетрясения в Японии" loading="lazy">
+          <div class="card-body">
+            <div class="card-cat">lenta.ru</div>
+            <div class="card-title">Более 20 человек пострадали в результате ночного землетрясения в Японии</div>
+            
+          </div>
+        </a>
+        <a href="https://lenta.ru/news/2026/11/08/v-germanii-zayavili-o-puti-rossii-k-pobede-v-mezhdunarodnoy-politike/" target="_blank" rel="noopener" class="glass">
+          <img class="card-img" src="https://icdn.lenta.ru/images/2026/11/08/07/20261108073224066/pic_6c2a27ab8d88c2b831f0c6a4bdd59d48.jpg" alt="В Германии заявили о пути России к победе в международной политике" loading="lazy">
+          <div class="card-body">
+            <div class="card-cat">lenta.ru</div>
+            <div class="card-title">В Германии заявили о пути России к победе в международной политике</div>
+            
+          </div>
+        </a>
+        <a href="https://lenta.ru/news/2026/11/08/sbornaya-rossii-zamenit-norvegiyu-na-mchm-po-hokkeyu/" target="_blank" rel="noopener" class="glass">
+          <img class="card-img" src="https://icdn.lenta.ru/images/2026/11/08/06/20261108060956465/pic_2c3eea79090254396a9eb76fd6f7d223.jpg" alt="Сборная России заменит Норвегию на МЧМ по хоккею" loading="lazy">
+          <div class="card-body">
+            <div class="card-cat">lenta.ru</div>
+            <div class="card-title">Сборная России заменит Норвегию на МЧМ по хоккею</div>
+            
+          </div>
+        </a>
+        <a href="https://lenta.ru/news/2026/11/08/raskryty-usloviya-dlya-pobedy-respublikantsev-na-vyborah-prezidenta-ssha-v-2028-godu/" target="_blank" rel="noopener" class="glass">
+          <img class="card-img" src="https://icdn.lenta.ru/images/2026/11/08/03/20261108031138524/pic_f76d5bfd5b999dc27ab2d0a481839494.jpg" alt="Раскрыты условия для победы республиканцев на выборах президента США в 2028 году" loading="lazy">
+          <div class="card-body">
+            <div class="card-cat">lenta.ru</div>
+            <div class="card-title">Раскрыты условия для победы республиканцев на выборах президента США в 2028 году</div>
+            
+          </div>
+        </a>
+    </div>
+  </section>
+</div>
+
+<!-- ═══ MOST READ ═══ -->
+<div class="container">
+  <section class="most-read" aria-label="Самое читаемое">
+    <div class="section-header">
+      <h2>Самое читаемое</h2>
+    </div>
+    <div class="glass">
+      <div class="most-read-list">
+        
+        <a href="https://lenta.ru/news/2026/11/08/zhurnalist-zametil-strannuyu-detal-v-slovah-zelenskogo-o-territoriyah/" target="_blank" rel="noopener" class="mr-item">
+          <span class="mr-num">1</span>
+          <div class="mr-content">
+            <div class="mr-title">В словах Зеленского о территориях нашли противоречия</div>
+            <div class="mr-meta">Мир · lenta.ru</div>
+          </div>
+        </a>
+        <a href="https://lenta.ru/news/2026/11/08/v-mid-otsenili-sledstvie-o-podryvah-severnogo-potoka-v-germanii/" target="_blank" rel="noopener" class="mr-item">
+          <span class="mr-num">2</span>
+          <div class="mr-content">
+            <div class="mr-title">В МИД оценили следствие о подрывах «Северных потоков» в Германии</div>
+            <div class="mr-meta">Мир · lenta.ru</div>
+          </div>
+        </a>
+        <a href="https://lenta.ru/news/2026/11/08/sily-pvo-za-noch-sbili-pochti-poltory-sotni-bespilotnikov-nad-rossiyskimi-regionami/" target="_blank" rel="noopener" class="mr-item">
+          <span class="mr-num">3</span>
+          <div class="mr-content">
+            <div class="mr-title">Силы ПВО за ночь сбили почти полторы сотни беспилотников над российскими регионами</div>
+            <div class="mr-meta">Россия · lenta.ru</div>
+          </div>
+        </a>
+        <a href="https://lenta.ru/news/2026/11/08/nazvany-sroki-vstrechi-putina-s-chlenami-spch/" target="_blank" rel="noopener" class="mr-item">
+          <span class="mr-num">4</span>
+          <div class="mr-content">
+            <div class="mr-title">Названы сроки встречи Путина с членами СПЧ</div>
+            <div class="mr-meta">Россия · lenta.ru</div>
+          </div>
+        </a>
+        <a href="https://lenta.ru/news/2026/11/08/v-gosdume-rasskazali-o-novom-sposobe-borby-s-telefonnymi-moshennikami/" target="_blank" rel="noopener" class="mr-item">
+          <span class="mr-num">5</span>
+          <div class="mr-content">
+            <div class="mr-title">В Госдуме рассказали о новом способе борьбы с телефонными мошенниками</div>
+            <div class="mr-meta">Технологии · lenta.ru</div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ═══ MULTIMEDIA ═══ -->
+<div class="container">
+  <section class="multimedia" aria-label="Мультимедиа">
+    <div class="section-header">
+      <h2>Мультимедиа</h2>
+    </div>
+    <div class="mm-grid">
+      
+        <div class="mm-card">
+          <a href="https://lenta.ru/news/2026/11/08/ekspert-ob-yasnil-nedopusk-zhurnalistov-do-taynoy-tyurmy-pod-kievom/" target="_blank" rel="noopener" class="glass">
+            <img src="https://icdn.lenta.ru/images/2026/11/08/05/20261108055059520/pic_63e439ba2613662734546d24f612e315.jpg" alt="Эксперт объяснил недопуск журналистов до «тайной тюрьмы» под Киевом" loading="lazy">
+            <div class="mm-body">
+              <div class="mm-cat">Культура</div>
+              <div class="mm-title">Эксперт объяснил недопуск журналистов до «тайной тюрьмы» под Киевом</div>
+              
+            </div>
+          </a>
+        </div>
+        <div class="mm-card">
+          <a href="https://lenta.ru/news/2026/11/08/stalo-izvestno-o-haraktere-predlozheniya-trampa-glave-ufc/" target="_blank" rel="noopener" class="glass">
+            <img src="https://icdn.lenta.ru/images/2026/11/08/05/20261108054009677/pic_a385199588509a3513fc945d9d22a993.jpg" alt="Стало известно о характере предложения Трампа главе UFC" loading="lazy">
+            <div class="mm-body">
+              <div class="mm-cat">Культура</div>
+              <div class="mm-title">Стало известно о характере предложения Трампа главе UFC</div>
+              
+            </div>
+          </a>
+        </div>
+    </div>
+  </section>
+</div>
+</main>
+
+<!-- ═══ FOOTER ═══ -->
+<footer class="site-footer" role="contentinfo">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="fb-name">Nora <span>News</span></div>
+        <p class="fb-desc">Ежедневный автоматический дайджест новостей. Отобранные и структурированные новости из проверенных источников.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Рубрики</h4>
+        <ul>
+          <li><a href="#world">Мир</a></li>
+          <li><a href="#russia">Россия</a></li>
+          <li><a href="#tech">Технологии</a></li>
+          <li><a href="#culture">Культура</a></li>
+          <li><a href="#sport">Спорт</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Источники</h4>
+        <ul>
+          <li><a href="https://lenta.ru" target="_blank" rel="noopener">Lenta.ru</a></li>
+          <li><a href="https://vz.ru" target="_blank" rel="noopener">VZ.ru</a></li>
+          <li><a href="https://ria.ru" target="_blank" rel="noopener">RIA.ru</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>О проекте</h4>
+        <ul>
+          <li><a href="/archive.html">Архив дайджестов</a></li>
+          <li><a href="https://github.com" target="_blank" rel="noopener">GitHub</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>Nora News · 2026</span>
+      <span>Автоматическая генерация · Обновляется ежедневно</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
